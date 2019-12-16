@@ -157,21 +157,21 @@ def get_current_data():  # get current values for display on web page
     curs = conn.cursor()
     current_time = []
     current_temp = []
-    #current_hum = []
+    current_soiltemp = []
     for row in curs.execute("SELECT * FROM DHT_data ORDER BY timestamp DESC LIMIT 1"):
         current_time = str(row[0])
         current_temp = row[1]
-        #current_hum = row[2]
+        current_soiltemp = row[3]
     conn.close()
     temp_difference, temp_week_ago = check_rapid_rise(current_temp)
-    return current_time, current_temp, temp_difference, temp_week_ago
+    return current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp
 
 
 
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    current_time, current_temp, temp_difference, temp_week_ago = get_current_data()
+    current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp = get_current_data()
     dates, temps, soiltemps = get_all()
     rows = number_records()
     temp_alarm = set_temp_alarm("check_status")
@@ -188,7 +188,7 @@ def index():
         print("set alarm to false and create a new timer")
         return redirect(url_for('index'))
 
-    return render_template('index.html', temp_week_ago=temp_week_ago, temp_difference=temp_difference,
+    return render_template('index.html', temp_week_ago=temp_week_ago, current_soiltemp=current_soiltemp, temp_difference=temp_difference,
                            temp_alarm=temp_alarm, temps=temps, soiltemps=soiltemps, dates=dates, current_time=current_time,
                            rows=rows, current_temp=current_temp, pin_status=pin_status, server_up="yes")
 
