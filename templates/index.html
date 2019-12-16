@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bin Temp</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <script src="{{ url_for('static', filename='Chart.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+
+ <script>
+
+  $( function() {
+	                $("#header").load("http://bintemp.com/nav.html");
+			                  $("#footer").load("footer.html");
+					                      } );
+  </script>
+
+
+</head>
+<body>
+<div id="header"></div>
+<div class="container">
+    <h4 class="text-center">Bin Temperature Monitoring System</h4>
+    <p class="text-center text-muted">This is the development system, data changes frequently<br><a href="http://bintemp.com">bintemp.com</a></p>
+
+
+
+    <!--Temp Alarm={{ temp_alarm }}<br>-->
+
+    {%if temp_alarm == "true" %}
+    <div class="alert alert-danger text-center">Rapid Rise Detected.<br> At least 3&#8457 in one week at 32 or
+        below.<br> Check bin.
+        <form method="post" action="/python">
+            <input class="btn btn-secondary" type="submit" name="clear_alarm" value="Clear Alarm"><br>
+        </form>
+    </div>
+    {% endif %}
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                {% if current_temp > 32 %}
+                Current temp= {{ current_temp }} &#8457; <span
+                    class="alert-warning">The corn is above freezing</span><br>
+                {% else %}
+                Current temp= {{ current_temp }} &#8457;<br>
+                {% endif %}
+                {% if current_temp > 40 %}
+                <span class="alert-warning">Corn is above 40 &#8457;</span><br>
+                {% endif %}
+                {% if current_temp > 50 %}
+                <span class="alert-danger">Corn is above 50 &#8457;</span><br>
+                {% endif %}
+                {% if current_temp > 60 %}
+                <span class="alert-danger">Corn is above 60 &#8457;</span><br>
+                {% endif %}
+                {% if current_temp > 70 %}
+                <span class="alert-danger">Corn is above 70 &#8457;</span><br>
+                {% endif %}
+                {% if current_temp < 32 %}
+                <span class="alert-success">Corn is frozen.</span><br>
+                {% endif %}
+                Temp 1 week ago= {{ temp_week_ago }}<br>
+
+                {% if current_temp > temp_week_ago %}
+                Temp increase from 1 week ago = {{ temp_difference }}<br>
+                {% else %}
+                Temp decrease from 1 week ago = {{ temp_difference }}<br>
+                {% endif %}
+
+                Last Sample Time = {{ current_time }} <br>
+            </div>
+            <div class="col-sm">
+                {% if pin_status == True %}
+                <span class="badge badge-success">Fan On</span>
+                {% else %}
+                <span class="badge badge-danger">Fan Off</span>
+                {% endif %}
+            </div>
+            <div class="col-sm">
+                {% if server_up == "yes" %}
+                <span class="badge badge-success">Connected To Server</span>
+                {% else %}
+                <span class="badge badge-danger">Server Disconnected</span>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <!--Number of Data Points= {{ rows }}<br>-->
+    </div>
+
+
+
+    <div class="container">
+        <div class="row">
+<!--begin chart-->
+        <div class="chart-container" style="position: relative; height:70vh; width:90vw">
+            <canvas id="myChart" width="400" height="400"></canvas>
+            <script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+
+        labels: [{% for date in dates %}'{{ date }}',{% endfor %}] ,
+
+        datasets: [
+        {
+            label: 'Air Temp',
+            fill: false,
+            data: [{% for temp in temps %}{{ temp }},{% endfor %}],
+    	    backgroundColor: 'green',
+		    borderColor: "green"
+        },
+        {
+            label: 'Center Sensor',
+            fill: false,
+            data: [{% for soil in soiltemps %}{{ soil }},{% endfor %}],
+    	    backgroundColor: 'orange',
+	    borderColor: "orange"
+        },
+	{
+	label: 'Sensor 1',
+	fill: false,
+	data: [{% for sensor in sensor1 %}{{ sensor }},{% endfor %}],
+		backgroundColor: 'blue',
+		borderColor: "blue"
+	}
+	]
+    },
+		options: {
+        scales: {
+            yAxes: [{
+                    ticks: {
+                    beginAtZero: false
+                }
+            }]
+        }
+    }
+});
+
+            </script>
+        </div>
+    <!--end chart-->
+            <div class="col-sm">
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+</body>
+</html>

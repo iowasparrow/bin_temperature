@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Relay</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <script src="{{ url_for('static', filename='Chart.js') }}"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body>
+<div class="container">
+    <h4 class="text-center">Bin Temperature Monitoring System</h4>
+    <p class="text-center text-muted">Relay Control</p>
+
+    Relay Status={{ relay_status }}<br>
+
+        <form method="post" action="/">
+            <input class="btn btn-success form-control" type="submit" name="turn_on" value="Turn On"><br>
+        </form>
+<br><br><br><br><br>
+        <form method="post" action="/">
+            <input class="btn btn-danger form-control" type="submit" name="turn_off" value="Turn Off"><br>
+        </form>
+
+
+</div>
+</body>
+</html>
