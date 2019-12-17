@@ -46,24 +46,24 @@
             <div class="col-sm">
                 {% if current_temp > 32 %}
                 Current temp= {{ current_temp }} &#8457; <span
-                    class="alert-warning">The grain is above freezing.</span><br>
+                    class="alert-warning">The Temp is above freezing.</span><br>
                 {% else %}
                 Current temp= {{ current_temp }} &#8457;<br>
                 {% endif %}
                 {% if current_temp > 40 %}
-                <span class="alert-warning">Grain is above 40 &#8457;</span><br>
+                <span class="alert-warning">Temp is above 40 &#8457;</span><br>
                 {% endif %}
                 {% if current_temp > 50 %}
-                <span class="alert-danger">Grain is above 50 &#8457;</span><br>
+                <span class="alert-danger">Temp is above 50 &#8457;</span><br>
                 {% endif %}
                 {% if current_temp > 60 %}
-                <span class="alert-danger">Grain is above 60 &#8457;</span><br>
+                <span class="alert-danger">Temp is above 60 &#8457;</span><br>
                 {% endif %}
                 {% if current_temp > 70 %}
-                <span class="alert-danger">Grain is above 70 &#8457;</span><br>
+                <span class="alert-danger">Temp is above 70 &#8457;</span><br>
                 {% endif %}
                 {% if current_temp < 32 %}
-                <span class="alert-success">Grain is frozen.</span><br>
+                <span class="alert-success">Temp is below 32, frozen.</span><br>
                 {% endif %}
                 Temp 1 week ago= {{ temp_week_ago }}<br>
 
