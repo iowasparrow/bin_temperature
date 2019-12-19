@@ -18,9 +18,8 @@
     <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
     <!--zoom plugin-->
-    <script src="{{ url_for('static', filename='chartzoom/chart.js@2.9.1') }}"></script>
-    <script src="{{ url_for('static', filename='chartzoom/hammerjs@2.0.8') }}"></script>
-    <script src="{{ url_for('static', filename='chartzoom/chartjs-plugin-zoom@0.7.4') }}"></script>
+    <script src="{{ url_for('static', filename='chartzoom/hammerjs2.0.8') }}"></script>
+    <script src="{{ url_for('static', filename='chartzoom/chartjs-plugin-zoom0.7.4') }}"></script>
     <!--end zoom plugin-->
 
 
@@ -112,8 +111,6 @@ var myChart = new Chart(ctx, {
         ]
     },
                 options: {
-			legend:{
-				display: true},
 		responsive: true,
         		scales: {
             			yAxes: [{
@@ -167,7 +164,7 @@ var myChart = new Chart(ctx, {
 
 
           <div class="card border-dark mb-3">
-            <div class="card-header">Soil Temp</div>
+		  <div class="card-header">Soil Temp: {{ current_soiltemp }}</div>
             <div class="card-body text-dark">
               <p class="card-text"><p class="card-text"><!--begin chart-->
 <div class="chart-container">
@@ -183,7 +180,7 @@ var myChart = new Chart(ctx, {
 
         datasets: [
         {
-            label: 'Soil Temp',
+	    label: 'Soil Temp',
             fill: false,
             data: [{% for soil in soiltemps %}{{ soil }},{% endfor %}],
             backgroundColor: 'orange',

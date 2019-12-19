@@ -11,9 +11,8 @@
 
    
     <!--zoom plugin-->
-    <script src="{{ url_for('static', filename='chartzoom/chart.js@2.9.1') }}"></script>
-    <script src="{{ url_for('static', filename='chartzoom/hammerjs@2.0.8') }}"></script>
-    <script src="{{ url_for('static', filename='chartzoom/chartjs-plugin-zoom@0.7.4') }}"></script>
+    <script src="{{ url_for('static', filename='chartzoom/hammerjs2.0.8') }}"></script>
+    <script src="{{ url_for('static', filename='chartzoom/chartjs-plugin-zoom0.7.4') }}"></script>
     <!--end zoom plugin-->
  
     
@@ -142,7 +141,7 @@ var myChart = new Chart(ctx, {
             label: 'Soil Temp',
             fill: false,
             data: [{% for soil in soiltemps %}{{ soil }},{% endfor %}],
-    	    backgroundColor: 'orange',
+	    backgroundColor: "orange",
 	    borderColor: "orange"
         },
 	{
