@@ -82,10 +82,10 @@ def check_rapid_rise(current_temp):
     if temp_difference >= 3 and current_temp > 32:
         print("DANGER RAPID RISE DETECTED 3 degrees in one week at 32.")
         set_temp_alarm('true')
-        formatted_temp_difference = round(temp_difference, 1)
+        formatted_temp_difference = round(temp_difference, 2)
         return formatted_temp_difference, temp_week_ago
     else:
-        formatted_temp_difference = round(temp_difference, 1)
+        formatted_temp_difference = round(temp_difference, 2)
         return formatted_temp_difference, temp_week_ago
 
 def create_timer():
