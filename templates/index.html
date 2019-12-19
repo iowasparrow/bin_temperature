@@ -8,6 +8,14 @@
     <script src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.4"></script>
+    
+    
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
@@ -19,7 +27,11 @@
 			                  $("#footer").load("footer.html");
 					                      } );
   </script>
-
+<style>
+#chartCont {
+	min-height:500px;
+}
+</style>
 
 </head>
 <body>
@@ -34,7 +46,7 @@
     {%if temp_alarm == "true" %}
     <div class="alert alert-danger text-center">Rapid Rise Detected.<br> At least 3&#8457 in one week at 32 or
         below.<br> Check bin.
-        <form method="post" action="/python">
+        <form method="post" action="/bin_temperature">
             <input class="btn btn-secondary" type="submit" name="clear_alarm" value="Clear Alarm"><br>
         </form>
     </div>
@@ -46,7 +58,7 @@
             <div class="col-sm">
                 {% if current_temp > 32 %}
                 Current temp= {{ current_temp }} &#8457; <span
-                    class="alert-warning">The Temp is above freezing.</span><br>
+		 class="alert-warning"><br>The Temp is above freezing.</span><br>
                 {% else %}
                 Current temp= {{ current_temp }} &#8457;<br>
                 {% endif %}
@@ -103,11 +115,12 @@
 
 
 
-    <div class="container">
+    <div id="chartCont" class="container">
         <div class="row">
 <!--begin chart-->
-        <div class="chart-container" style="position: relative; height:70vh; width:90vw">
-            <canvas id="myChart" width="400" height="400"></canvas>
+<div class="chart-container" style="position: relative; height:70vh; width:90vw">
+
+<canvas id="myChart" height="300"></canvas>
             <script>
 var ctx = document.getElementById('myChart').getContext('2d');
 var myChart = new Chart(ctx, {
@@ -141,13 +154,69 @@ var myChart = new Chart(ctx, {
 	]
     },
 		options: {
-        scales: {
+	responsive: true,
+	scales: {
             yAxes: [{
                     ticks: {
                     beginAtZero: false
                 }
             }]
+        },
+
+
+
+
+
+
+
+       plugins: {
+            zoom: {
+                // Container for pan options
+                pan: {
+                    // Boolean to enable panning
+                    enabled: true,
+
+                    // Panning directions. Remove the appropriate direction to disable 
+                    // Eg. 'y' would only allow panning in the y direction
+                    mode: 'xy'
+                },
+
+                // Container for zoom options
+                zoom: {
+                    // Boolean to enable zooming
+                    enabled: true,
+
+                    // Zooming directions. Remove the appropriate direction to disable 
+                    // Eg. 'y' would only allow zooming in the y direction
+                    mode: 'xy',
+                }
+            }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 });
 
