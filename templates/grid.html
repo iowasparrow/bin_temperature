@@ -17,11 +17,11 @@
     <script src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.4"></script>
+    <!--zoom plugin-->
+    <script src="{{ url_for('static', filename='chartzoom/chart.js@2.9.1') }}"></script>
+    <script src="{{ url_for('static', filename='chartzoom/hammerjs@2.0.8') }}"></script>
+    <script src="{{ url_for('static', filename='chartzoom/chartjs-plugin-zoom@0.7.4') }}"></script>
+    <!--end zoom plugin-->
 
 
 
@@ -70,7 +70,7 @@
 
     <br>
     <center>
-      <h3>Grain bin temperature monitoring system</h3><small><span class="text-muted">View any sensor from any smartphone or computer using IoT technology.</span></small>
+      <h3>Sensor Dashboard</h3><small><span class="text-muted">View any sensor from any smartphone or computer using IoT technology.</span></small>
     </center>
 
     <!--<div class="container-fluid" style="background:darkgrey;"><p><h3 style="text-align:center">MM/DD/YYYY</p></h3></div>-->

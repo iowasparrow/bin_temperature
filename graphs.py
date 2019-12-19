@@ -167,6 +167,18 @@ def get_current_data():  # get current values for display on web page
     return current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp
 
 
+@app.route("/grid", methods=['GET', 'POST'])
+def grid():
+    current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp = get_current_data()
+    dates, temps, soiltemps = get_all()
+    rows = number_records()
+    temp_alarm = set_temp_alarm("check_status")
+    #pin_status = check_relay_status()
+    pin_status = False
+
+    return render_template('grid.html', temp_week_ago=temp_week_ago, current_soiltemp=current_soiltemp, temp_difference=temp_difference,
+                           temp_alarm=temp_alarm, temps=temps, soiltemps=soiltemps, dates=dates, current_time=current_time,
+                           rows=rows, current_temp=current_temp, pin_status=pin_status, server_up="yes")
 
 
 @app.route("/", methods=['GET', 'POST'])
