@@ -21,7 +21,7 @@ def check_timer():
     now = datetime.now()
     timer_started = datetime.strptime(timer_start, '%Y-%m-%d %H:%M:%S.%f')
     delta = now - timer_started
-    fixed_delta = timedelta(seconds=8000)  #2.22 hours
+    fixed_delta = timedelta(seconds=86400)  #24 hours
     if delta > fixed_delta:
         print("timer function says cancel timer enough time has passed")
         cancel = True
