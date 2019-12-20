@@ -245,36 +245,136 @@ var myChart = new Chart(ctx, {
 
 
           <div class="card border-dark mb-3">
-            <div class="card-header">Add Sensor</div>
+            <div class="card-header">Dryer Temp: 134</div>
             <div class="card-body text-dark">
-              <p class="card-text">Sensor Data</p>
+              <p class="card-text">
+
+                <canvas id="dryer" height="340"></canvas>
+                <script>
+                var ctx = document.getElementById('dryer');
+                var dryer = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Dryer'],
+                        datasets: [{
+                            label: 'Temperature',
+                            data: [134],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+                </script>
+              </p>
             </div>
           </div>
 
 
       </div>
 
-
-
-
-
-
-
-
-
-
-
     </div>
 
 
       <div class="row">
         <div class="col-md-4">
-
-
           <div class="card border-dark mb-3">
-            <div class="card-header">Add Sensor</div>
+            <div class="card-header">Cat House: 29</div>
             <div class="card-body text-dark">
-              <p class="card-text">Sensor Data</p>
+              <p class="card-text">
+                <!--begin chart-->
+                <div class="chart-container">
+
+                <canvas id="cathouse" height="300"></canvas>
+                <script>
+                var ctx = document.getElementById('cathouse').getContext('2d');
+                var cathouse = new Chart(ctx, {
+                type: 'bar',
+                data: {
+
+                labels: [1] ,
+
+                datasets: [
+                {
+                label: 'Cat House Temp',
+                fill: false,
+                data: [29],
+                backgroundColor: 'grey',
+                borderColor: "grey"
+                }
+                ]
+                },
+                  options: {
+                          legend:{
+                                  display: true},
+                  responsive: true,
+                          scales: {
+                                  yAxes: [{
+                                          ticks: {
+                                          beginAtZero: true
+                                          }
+                                  }],
+                                  xAxes:[{display: false
+                                  }]
+                                  },
+
+
+                plugins: {
+                zoom: {
+                  // Container for pan options
+                  pan: {
+                      // Boolean to enable panning
+                      enabled: true,
+
+                      // Panning directions. Remove the appropriate direction to disable
+                      // Eg. 'y' would only allow panning in the y direction
+                      mode: 'xy'
+                  },
+
+                  // Container for zoom options
+                  zoom: {
+                      // Boolean to enable zooming
+                      enabled: true,
+
+                      // Zooming directions. Remove the appropriate direction to disable
+                      // Eg. 'y' would only allow zooming in the y direction
+                      mode: 'xy',
+                  }
+                }
+                }
+
+
+                }
+                });
+
+                </script>
+                </div>
+                <!--end chart-->
+
+              </p>
             </div>
           </div>
 
@@ -284,14 +384,63 @@ var myChart = new Chart(ctx, {
         <div class="col-md-8">
                     <div class="card text-center">
                   <div class="card-header">
-                    Add Sensor
+                    All Sensors
                   </div>
                   <div class="card-body">
-                    <p class="card-text">Sensor Data</p>
-		    <a href="http://bintemp.com" class="btn btn-primary">home</a>
-                  </div>
-                  <div class="card-footer text-muted">
-                    Multi Axis Chart
+                    <p class="card-text">
+
+                      <canvas id="bin_bar" width="400" height="200"></canvas>
+                      <script>
+                      var ctx = document.getElementById('bin_bar');
+                      var bin_bar = new Chart(ctx, {
+                          type: 'bar',
+                          data: {
+                              labels: ['Temp', 'Soil Temp', 'Cat House', 'Sensor2', 'Sensor3', 'Sensor4'],
+                              datasets: [{
+                                  label: 'Temperature',
+                                  data: [{{ current_temp }}, {{ current_soiltemp }}, 29, 5, 2, -3],
+                                  backgroundColor: [
+                                      'rgba(255, 99, 132, 0.2)',
+                                      'rgba(54, 162, 235, 0.2)',
+                                      'rgba(255, 206, 86, 0.2)',
+                                      'rgba(75, 192, 192, 0.2)',
+                                      'rgba(153, 102, 255, 0.2)',
+                                      'rgba(255, 159, 64, 0.2)'
+                                  ],
+                                  borderColor: [
+                                      'rgba(255, 99, 132, 1)',
+                                      'rgba(54, 162, 235, 1)',
+                                      'rgba(255, 206, 86, 1)',
+                                      'rgba(75, 192, 192, 1)',
+                                      'rgba(153, 102, 255, 1)',
+                                      'rgba(255, 159, 64, 1)'
+                                  ],
+                                  borderWidth: 1
+                              }]
+                          },
+                          options: {
+                              scales: {
+                                  yAxes: [{
+                                      ticks: {
+                                          beginAtZero: true
+                                      }
+                                  }]
+                              }
+                          }
+                      });
+                      </script>
+
+
+
+
+
+
+
+
+
+
+                    </p>
+
                   </div>
                 </div></div>
       </div>
