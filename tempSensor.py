@@ -4,18 +4,21 @@ import time
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 
-temp_sensor = '/sys/bus/w1/devices/28-00000b91fb79/w1_slave'
+sensor_1 = '/sys/bus/w1/devices/28-00000b91fb79/w1_slave'
 
 
-def read_temp_raw():
-    f = open(temp_sensor, 'r')
+#def read_temp_raw():
+#    f = open(temp_sensor, 'r')
+#    lines = f.readlines()
+#    f.close()
+#    return lines
+
+
+def read_tempsensor1():
+    f = open(sensor_1, 'r')
     lines = f.readlines()
     f.close()
-    return lines
-
-
-def read_temp():
-    lines = read_temp_raw()
+#    lines = read_temp_raw()
     while lines[0].strip()[-3:] != 'YES':
         time.sleep(0.2)
         lines = read_temp_raw()
@@ -27,5 +30,5 @@ def read_temp():
         #return temp_c, temp_f
         return float(temp_f)
 #while True:
-print(read_temp())
+print(read_tempsensor1())
 #    time.sleep(1)

@@ -39,7 +39,7 @@ def getDHTdata():
     #print(xx['data'][0]['c2tmpf'])
     print("got soil temp")
 
-    sensor1 = tempSensor.read_temp()
+    sensor1 = tempSensor.read_tempsensor1()
     
     return temp, soiltemp, sensor1
 
