@@ -6,7 +6,7 @@ from datetime import datetime, timezone, timedelta
 import createTable as createTable
 app = Flask(__name__)
 
-alert_text_file = 'alert_file.txt'
+alert_text_file = '/var/www/html/binweb/bin_temperature/alert_file.txt'
 #database = '/home/gsiebrecht/PycharmProjects/bin_temperature/sensorsData.db'
 #database = 'sensorsData.db'
 database = '/var/www/html/binweb/bin_temperature/sensorsData.db'
@@ -21,7 +21,7 @@ def get_all():  # this is for the chart
     temps = []
     # siteids = []
     soiltemps = []
-    # sensor1 = []
+    sensor1 = []
     # sensor2 = []
     # sensor3 = []
     # sensor4 = []
@@ -32,7 +32,7 @@ def get_all():  # this is for the chart
         temps.append(row[1])
         #siteids.append(row[2])
         soiltemps.append(row[3])
-        # sensor1.append(row[4])
+        sensor1.append(row[4])
         # sensor2.append(row[5])
         # sensor3append(row[6])
         # sensor4.append(row[7])
@@ -43,7 +43,7 @@ def get_all():  # this is for the chart
 
         #print(soiltemps)
     conn.close()
-    return dates, temps, soiltemps
+    return dates, temps, soiltemps, sensor1
 
 @app.route("/reset", methods=['GET', 'POST'])
 def something():
@@ -82,11 +82,11 @@ def check_rapid_rise(current_temp):
     if temp_difference >= 3 and current_temp > 32:
         print("DANGER RAPID RISE DETECTED 3 degrees in one week at 32.")
         set_temp_alarm('true')
-        formatted_temp_difference = round(temp_difference, 2)
-        return formatted_temp_difference, temp_week_ago
+        temp_difference_rounded = round(temp_difference, 2)
+        return temp_difference_rounded, temp_week_ago
     else:
-        formatted_temp_difference = round(temp_difference, 2)
-        return formatted_temp_difference, temp_week_ago
+        temp_difference_rounded = round(temp_difference, 2)
+        return temp_difference_rounded, temp_week_ago
 
 def create_timer():
     conn = sqlite3.connect(database)
@@ -107,9 +107,9 @@ def check_timer():
     now = datetime.now()
     timer_started = datetime.strptime(timer_start, '%Y-%m-%d %H:%M:%S.%f')
     delta = now - timer_started
-    fixed_delta = timedelta(seconds=8000)  #8000
+    fixed_delta = timedelta(seconds=8000)  #8000=2 hours
     if delta > fixed_delta:
-        print("timer function says cancel timer enough time has passed")
+        print("timer function says cancel, timer enough time has passed")
         cancel = True
     else:
         print("check timer function in timer modules returns false ")
@@ -128,7 +128,7 @@ def set_temp_alarm(temp_alarm):  # we expect a string of true check status
                 alert_file = open(alert_text_file, "rt")
                 if alert_file.readline() == 'true':
                     alert_file.close()
-                    # print("file contents=True close it and return true")
+                    print("file contents=True close it and return true")
                     return 'true'
                 else:
                     alert_file = open(alert_text_file, "w")
@@ -141,7 +141,7 @@ def set_temp_alarm(temp_alarm):  # we expect a string of true check status
                 alert_file.write("true")
                 alert_file.close()
                 os.chmod(alert_text_file, 0o777)
-                # print("File Created")
+                print("File Created")
 
     if temp_alarm == 'check_status':
         if os.path.exists(alert_text_file):
@@ -169,14 +169,14 @@ def get_current_data():  # get current values for display on web page
 
 @app.route("/grid", methods=['GET', 'POST'])
 def grid():
-    current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp = get_current_data()
+    current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp,sensor1 = get_current_data()
     dates, temps, soiltemps = get_all()
     rows = number_records()
     temp_alarm = set_temp_alarm("check_status")
     #pin_status = check_relay_status()
     pin_status = False
 
-    return render_template('grid.html', temp_week_ago=temp_week_ago, current_soiltemp=current_soiltemp, temp_difference=temp_difference,
+    return render_template('grid.html', temp_week_ago=temp_week_ago, current_soiltemp=current_soiltemp, sensor1=sensor1, temp_difference=temp_difference,
                            temp_alarm=temp_alarm, temps=temps, soiltemps=soiltemps, dates=dates, current_time=current_time,
                            rows=rows, current_temp=current_temp, pin_status=pin_status, server_up="yes")
 
@@ -184,7 +184,7 @@ def grid():
 @app.route("/", methods=['GET', 'POST'])
 def index():
     current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp = get_current_data()
-    dates, temps, soiltemps = get_all()
+    dates, temps, soiltemps, sensor1 = get_all()
     rows = number_records()
     temp_alarm = set_temp_alarm("check_status")
     #pin_status = check_relay_status()
@@ -200,7 +200,7 @@ def index():
         print("set alarm to false and create a new timer")
         return redirect(url_for('index'))
 
-    return render_template('index.html', temp_week_ago=temp_week_ago, current_soiltemp=current_soiltemp, temp_difference=temp_difference,
+    return render_template('index.html', temp_week_ago=temp_week_ago, current_soiltemp=current_soiltemp,sensor1=sensor1, temp_difference=temp_difference,
                            temp_alarm=temp_alarm, temps=temps, soiltemps=soiltemps, dates=dates, current_time=current_time,
                            rows=rows, current_temp=current_temp, pin_status=pin_status, server_up="yes")
 

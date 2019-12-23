@@ -1,16 +1,13 @@
 import os
 import time
 
-#  begin temp sensor functions
-#  drivers for temp sensor
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
-# temp sensor path, change this
-temp_sensor = 'sys/bus/w1/devices/28-000005e2fdc3/w1_slave'
+
+temp_sensor = '/sys/bus/w1/devices/28-00000b91fb79/w1_slave'
 
 
-
-def temp_raw():  # read the raw temp sensor file
+def read_temp_raw():
     f = open(temp_sensor, 'r')
     lines = f.readlines()
     f.close()
@@ -18,24 +15,17 @@ def temp_raw():  # read the raw temp sensor file
 
 
 def read_temp():
-
-    lines = temp_raw()
+    lines = read_temp_raw()
     while lines[0].strip()[-3:] != 'YES':
         time.sleep(0.2)
-        lines = temp_raw()
-        temp_output = lines[1].find('t=')
-
-        if temp_output != -1:
-            temp_string = lines[1].strip()[temp_output + 2:]
-            temp_c = float(temp_string) / 1000.0
-            temp_f = temp_c * 9.0 / 5.0 + 32.0
-            return temp_c, temp_f
-
-
-while True:
-    print(read_temp())
-    time.sleep(1)
-
-
-
-#  end temp sensor functions
+        lines = read_temp_raw()
+    equals_pos = lines[1].find('t=')
+    if equals_pos != -1:
+        temp_string = lines[1][equals_pos + 2:]
+        temp_c = float(temp_string) / 1000.0
+        temp_f = temp_c * 9.0 / 5.0 + 32.0
+        #return temp_c, temp_f
+        return float(temp_f)
+#while True:
+print(read_temp())
+#    time.sleep(1)

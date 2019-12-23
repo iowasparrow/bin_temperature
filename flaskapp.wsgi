@@ -1,8 +1,8 @@
-#!/var/www/html/binweb/bin_temperature/venv/bin/python3
+#!/var/www/html/binweb/bin_temperature/.venv/bin/python3
 import sys
 import logging
 logging.basicConfig(stream=sys.stderr)
-#sys.path.insert(0,"/var/www/html/python/")
+#sys.path.insert(0,"/var/www/html/python/TTTTTEST")
 sys.path.insert(0,"/var/www/html/binweb/bin_temperature/")
 
 #from flaskapp import app as application

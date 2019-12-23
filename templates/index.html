@@ -39,14 +39,14 @@
 <div class="container">
     <h4 class="text-center">Bin Temperature Monitoring System</h4>
 
-
+  value =  {{ sensor1 }}
 
     <!--Temp Alarm={{ temp_alarm }}<br>-->
 
     {%if temp_alarm == "true" %}
     <div class="alert alert-danger text-center">Rapid Rise Detected.<br> At least 3&#8457 in one week at 32 or
         below.<br> Check bin.
-        <form method="post" action="/bin_temperature">
+        <form method="post" action="/bin_temperature/">
             <input class="btn btn-secondary" type="submit" name="clear_alarm" value="Clear Alarm"><br>
         </form>
     </div>
@@ -56,12 +56,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm">
-                {% if current_temp > 32 %}
-                Current temp= {{ current_temp }} &#8457; <span
-		 class="alert-warning"><br>The Temp is above freezing.</span><br>
-                {% else %}
                 Current temp= {{ current_temp }} &#8457;<br>
-                {% endif %}
                 {% if current_temp > 40 %}
                 <span class="alert-warning">Temp is above 40 &#8457;</span><br>
                 {% endif %}
@@ -96,7 +91,7 @@
 		{% if current_soiltemp - current_temp >= 20 and current_soiltemp > 30 %}
 		<p>Air is 20 degrees cooler than the corn, and the grain is above 30, turn on the fan.</p>
 		{% else %}
-			<p>Fan is not recommended now.</p>
+		<p>Air temp is not 20 degrees colder than the grain, no fan.</p>
 		{% endif %}
 
             </div>
