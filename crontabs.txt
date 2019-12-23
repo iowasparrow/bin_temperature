@@ -1,0 +1,2 @@
+0 */1 * * * /usr/bin/python3 /var/www/html/binweb/bin_temperature/appDHT.py
+5 4 * * sun /usr/bin/python3 /var/www/html/binweb/bin_temperature/delete_old_data.py
