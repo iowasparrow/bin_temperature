@@ -6,6 +6,8 @@ import requests
 import time
 import subprocess
 import tempSensor
+#import publishmqtt
+import simple
 #from tempSensor import read_temp
 
 #dbname = '/home/gsiebrecht/PycharmProjects/bin_temperature/sensorsData.db'
@@ -54,7 +56,7 @@ def logData(temp, soiltemp, sensor1):
     #print(formatted_date)
     conn = sqlite3.connect(dbname)
     curs = conn.cursor()
-    curs.execute("INSERT INTO DHT_data values((?), (?),  (?),  (?),  (?),  (?),  (?),  (?), (?),  (?))", (formatted_date, temp, siteid, soiltemp, sensor1, 0, 0, 0, 0, 0))
+    curs.execute("INSERT INTO DHT_data values((?), (?),  (?),  (?),  (?),  (?),  (?), (?),(?), (?))", (formatted_date, temp, siteid, soiltemp, sensor1,None ,None, None, None, None))
     conn.commit()
     conn.close()
     sensor2 = 0
@@ -87,7 +89,9 @@ def main():
 #    while True:
         temp, soiltemp, sensor1 = getDHTdata()
         logData(temp, soiltemp, sensor1)
-        displayData()
+        #publishmqtt.publish_message
+        print("mqtt sensor=" + simple.getmessage())        
+        #displayData()
         #print("sleeping")
         #time.sleep(sampleFreq)
 

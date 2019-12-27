@@ -4,6 +4,8 @@ import os
 from werkzeug.utils import redirect
 from datetime import datetime, timezone, timedelta
 import createTable as createTable
+import pprint
+
 app = Flask(__name__)
 
 alert_text_file = '/var/www/html/binweb/bin_temperature/alert_file.txt'
@@ -32,16 +34,19 @@ def get_all():  # this is for the chart
         temps.append(row[1])
         #siteids.append(row[2])
         soiltemps.append(row[3])
-        sensor1.append(row[4])
+        #sensor1.append(row[4])
+        
+        if row[4] == 0:
+            sensor1.append('null')
+        else:
+            sensor1.append(row[4])
+        
         # sensor2.append(row[5])
         # sensor3append(row[6])
         # sensor4.append(row[7])
         # sensor5.append(row[8])
         # sensor6.append(row[9])
 
-
-
-        #print(soiltemps)
     conn.close()
     return dates, temps, soiltemps, sensor1
 
