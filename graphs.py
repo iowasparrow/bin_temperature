@@ -24,7 +24,7 @@ def get_all():  # this is for the chart
     # siteids = []
     soiltemps = []
     sensor1 = []
-    # sensor2 = []
+    sensor2 = []
     # sensor3 = []
     # sensor4 = []
     # sensor5 = []
@@ -34,21 +34,30 @@ def get_all():  # this is for the chart
         temps.append(row[1])
         #siteids.append(row[2])
         soiltemps.append(row[3])
-        #sensor1.append(row[4])
-        
-        if row[4] == 0:
+       
+        if row[4] == None:
+            #convert None to null so the chart is happy
+            sensor1.append('null')
+        elif row[4] == 0:
             sensor1.append('null')
         else:
             sensor1.append(row[4])
+
+        if row[5] == None:
+            #convert None to null so the chart is happy
+            sensor2.append('null')
+        elif row[5] == 0:
+            sensor2.append('null')
+        else:
+            sensor2.append(row[5])        
         
-        # sensor2.append(row[5])
-        # sensor3append(row[6])
+        # sensor3.append(row[6])
         # sensor4.append(row[7])
         # sensor5.append(row[8])
         # sensor6.append(row[9])
 
     conn.close()
-    return dates, temps, soiltemps, sensor1
+    return dates, temps, soiltemps, sensor1, sensor2
 
 @app.route("/reset", methods=['GET', 'POST'])
 def something():
@@ -74,13 +83,13 @@ def number_records():  # display number of recoreds
     return datapoints[0][0]
 
 
-def check_rapid_rise(current_temp):
+def check_rapid_rise(current_temp, x):
     conn = sqlite3.connect(database, check_same_thread=False)
     curs = conn.cursor()
     temp_week_ago = 0
     for row in curs.execute(
             "SELECT * FROM DHT_data WHERE timestamp BETWEEN datetime('now', '-8 days') AND datetime('now', '-6 days') LIMIT 1;"):
-        temp_week_ago = row[1]
+        temp_week_ago = row[x]
     conn.close()
     temp_difference = current_temp - temp_week_ago
     print('temp difference=', temp_difference)
@@ -163,19 +172,28 @@ def get_current_data():  # get current values for display on web page
     current_time = []
     current_temp = []
     current_soiltemp = []
+    sensor1 = []
+    sensor2 = []
     for row in curs.execute("SELECT * FROM DHT_data ORDER BY timestamp DESC LIMIT 1"):
         current_time = str(row[0])
         current_temp = row[1]
         current_soiltemp = row[3]
+        current_sensor1 = row[4]
+        current_sensor2 = row[5]
     conn.close()
-    temp_difference, temp_week_ago = check_rapid_rise(current_temp)
-    return current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp
+    
+    #send current temp and databse row to check for rapid rise
+    temp_difference, temp_week_ago = check_rapid_rise(current_temp,1) 
+    temp_difference1, temp_week_ago1 = check_rapid_rise(current_sensor1, 4)
+    temp_difference2, temp_week_ago2 = check_rapid_rise(current_sensor2, 5)
+
+    return current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp, current_sensor1, current_sensor2, temp_difference1, temp_week_ago1, temp_difference2, temp_week_ago2
 
 
 @app.route("/grid", methods=['GET', 'POST'])
 def grid():
-    current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp,sensor1 = get_current_data()
-    dates, temps, soiltemps = get_all()
+    current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp, current_sensor1, current_sensor2 = get_current_data()
+    dates, temps, soiltemps,sensor1, sensor2 = get_all()
     rows = number_records()
     temp_alarm = set_temp_alarm("check_status")
     #pin_status = check_relay_status()
@@ -188,8 +206,8 @@ def grid():
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp = get_current_data()
-    dates, temps, soiltemps, sensor1 = get_all()
+    current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp, current_sensor1, current_sensor2, temp_difference1, temp_week_ago1, temp_difference2, temp_week_ago2 = get_current_data()
+    dates, temps, soiltemps, sensor1, sensor2 = get_all()
     rows = number_records()
     temp_alarm = set_temp_alarm("check_status")
     #pin_status = check_relay_status()
@@ -205,10 +223,7 @@ def index():
         print("set alarm to false and create a new timer")
         return redirect(url_for('index'))
 
-    return render_template('index.html', temp_week_ago=temp_week_ago, current_soiltemp=current_soiltemp,sensor1=sensor1, temp_difference=temp_difference,
-                           temp_alarm=temp_alarm, temps=temps, soiltemps=soiltemps, dates=dates, current_time=current_time,
-                           rows=rows, current_temp=current_temp, pin_status=pin_status, server_up="yes")
-
+    return render_template('index.html', temp_week_ago=temp_week_ago, current_soiltemp=current_soiltemp,sensor1=sensor1, sensor2=sensor2, temp_difference=temp_difference, temp_difference1=temp_difference1, temp_week_ago1=temp_week_ago1,temp_difference2=temp_difference2, temp_week_ago2=temp_week_ago2, temp_alarm=temp_alarm, temps=temps, soiltemps=soiltemps, dates=dates, current_time=current_time, rows=rows, current_temp=current_temp, pin_status=pin_status, current_sensor1=current_sensor1, current_sensor2=current_sensor2, server_up="no")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

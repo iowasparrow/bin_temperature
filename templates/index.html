@@ -8,36 +8,52 @@
     <script src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
-
-   
     <!--zoom plugin-->
     <script src="{{ url_for('static', filename='chartzoom/hammerjs2.0.8') }}"></script>
     <script src="{{ url_for('static', filename='chartzoom/chartjs-plugin-zoom0.7.4') }}"></script>
     <!--end zoom plugin-->
- 
-    
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 
  <script>
-
   $( function() {
-	                $("#header").load("http://bintemp.com/nav.html");
-			                  $("#footer").load("footer.html");
-					                      } );
+	$("#header").load("http://bintemp.com/nav.html");
+	$("#footer").load("footer.html");
+} );
   </script>
-<style>
-#chartCont {
-	min-height:500px;
-}
-</style>
 
+<style>
+	#chartCont {
+	min-height:500px;
+	}
+</style>
 </head>
+
 <body>
 <div id="header"></div>
 <div class="container">
-    <h4 class="text-center">Bin Temperature Monitoring System</h4>
+    <div class="container">
+	<div class="row">
+
+	    <div class="col">
+    	    {% if server_up == "yes" %}
+                <span class="badge badge-success">Connected To Server</span>
+            {% else %}
+                <span class="badge badge-danger">Server Disconnected</span>
+	    {% endif %}
+	    </div>
+
+	    <div class="col">
+	    Last Sample Time= {{ current_time }}
+	    </div>
+			
+	    <div class="col">
+	    <span class="text-right"></span>
+	    </div>
+	</div>
+    </div>
+			
 
     <!--Temp Alarm={{ temp_alarm }}<br>-->
 
@@ -54,52 +70,60 @@
     <div class="container">
         <div class="row">
             <div class="col-sm">
-                Current temp= {{ current_temp }} &#8457;<br>
-                {% if current_temp > 40 %}
-                <span class="alert-warning">Temp is above 40 &#8457;</span><br>
-                {% endif %}
-                {% if current_temp > 50 %}
-                <span class="alert-danger">Temp is above 50 &#8457;</span><br>
-                {% endif %}
-                {% if current_temp > 60 %}
-                <span class="alert-danger">Temp is above 60 &#8457;</span><br>
-                {% endif %}
-                {% if current_temp > 70 %}
-                <span class="alert-danger">Temp is above 70 &#8457;</span><br>
-                {% endif %}
-                {% if current_temp < 32 %}
-                <span class="alert-success">Temp is below 32, frozen.</span><br>
-                {% endif %}
-                Temp 1 week ago= {{ temp_week_ago }}<br>
+		        <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">Sensor 1 - Big Bin</h5>
+                <p class="card-text">
+                        Current temp= {{ current_temp }} &#8457;<br>
+                        Temp 1 week ago= {{ temp_week_ago }}<br>
 
-                {% if current_temp > temp_week_ago %}
-                Temp increase from 1 week ago = {{ temp_difference }}<br>
-                {% else %}
-                Temp decrease from 1 week ago = {{ temp_difference }}<br>
-                {% endif %}
-
-                Last Sample Time = {{ current_time }} <br>
+                        {% if current_temp > temp_week_ago %}
+                                Temp increase from 1 week ago = {{ temp_difference }}<br>
+                        {% else %}
+                                Temp decrease from 1 week ago = {{ temp_difference }}<br>
+                        {% endif %}
+                </p>
+                </div>
+        </div>
             </div>
+
             <div class="col-sm">
-                {% if pin_status == True %}
-                <span class="badge badge-success"></span>
-                {% else %}
-                <span class="badge badge-danger"></span>
-                {% endif %}
-		{% if current_soiltemp - current_temp >= 20 and current_soiltemp > 30 %}
-		<p>Air is 20 degrees cooler than the corn, and the grain is above 30, turn on the fan.</p>
-		{% else %}
-		<p>Air temp is not 20 degrees colder than the grain, no fan.</p>
-		{% endif %}
+		        <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">Sensor 2 - Middle  Bin</h5>
+                <p class="card-text">
+                        Current temp= {{ current_sensor1 }} &#8457;<br>
+                        Temp 1 week ago= {{ temp_week_ago1 }}<br>
 
-            </div>
+                        {% if current_sensor1 > temp_week_ago %}
+                                Temp increase from 1 week ago = {{ temp_difference1 }}<br>
+                        {% else %}
+                                Temp decrease from 1 week ago = {{ temp_difference1 }}<br>
+                        {% endif %}
+                </p>
+                </div>
+        </div>
+	    </div>
+
             <div class="col-sm">
-                {% if server_up == "yes" %}
-                <span class="badge badge-success">Connected To Server</span>
-                {% else %}
-                <span class="badge badge-danger">Server Disconnected</span>
-                {% endif %}
-            </div>
+
+	<div class="card">
+  		<div class="card-body">
+    		<h5 class="card-title">Sensor 3 - Small Bin</h5>
+    		<p class="card-text">
+   	        	Current temp= {{ current_sensor2 }} &#8457;<br>
+               		Temp 1 week ago= {{ temp_week_ago2 }}<br>
+
+                	{% if current_sensor2 > temp_week_ago2 %}
+                		Temp increase from 1 week ago = {{ temp_difference2 }}<br>
+                	{% else %}
+				Temp decrease from 1 week ago = {{ temp_difference2 }}<br>
+                	{% endif %}
+    		</p>
+  		</div>
+	</div>
+
+	    </div>
         </div>
 
 
@@ -143,7 +167,15 @@ var myChart = new Chart(ctx, {
 	data: [{% for sensor in sensor1 %}{{ sensor }},{% endfor %}],
 		backgroundColor: 'blue',
 		borderColor: "blue"
-	}
+	},
+	{
+        label: 'Sensor 2',
+        fill: false,
+        data: [{% for sensor in sensor2 %}{{ sensor }},{% endfor %}],
+                backgroundColor: 'red',
+                borderColor: 'red'
+        }
+	
 	]
     },
 		options: {
@@ -185,28 +217,6 @@ var myChart = new Chart(ctx, {
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

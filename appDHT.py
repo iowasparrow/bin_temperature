@@ -42,24 +42,23 @@ def getDHTdata():
     print("got soil temp")
 
     sensor1 = tempSensor.read_tempsensor1()
-    
-    return temp, soiltemp, sensor1
+    sensor2 = tempSensor.read_tempsensor2()    
+    return temp, soiltemp, sensor1, sensor2
 
 
 # log sensor data on database
-def logData(temp, soiltemp, sensor1):
+def logData(temp, soiltemp, sensor1, sensor2):
     fmt = "%Y-%m-%d %H:%M:%S"
     now_utc = datetime.now(timezone('UTC'))
     now_central = now_utc.astimezone(timezone('US/Central'))
-    #print(now_central.strftime(fmt))
+    print("time now in appdht:" + now_central.strftime(fmt))
     formatted_date = now_central.strftime(fmt)
     #print(formatted_date)
     conn = sqlite3.connect(dbname)
     curs = conn.cursor()
-    curs.execute("INSERT INTO DHT_data values((?), (?),  (?),  (?),  (?),  (?),  (?), (?),(?), (?))", (formatted_date, temp, siteid, soiltemp, sensor1,None ,None, None, None, None))
+    curs.execute("INSERT INTO DHT_data values((?), (?),  (?),  (?),  (?),  (?),  (?), (?),(?), (?))", (formatted_date, temp, siteid, soiltemp, sensor1, sensor2 ,None, None, None, None))
     conn.commit()
     conn.close()
-    sensor2 = 0
     send_data_to_api(temp, soiltemp, sensor1, sensor2)
 
 def send_data_to_api(temp,soiltemp,sensor1,sensor2):
@@ -87,10 +86,10 @@ def displayData():
 # main function
 def main():
 #    while True:
-        temp, soiltemp, sensor1 = getDHTdata()
-        logData(temp, soiltemp, sensor1)
+        temp, soiltemp, sensor1, sensor2 = getDHTdata()
+        logData(temp, soiltemp, sensor1, sensor2)
         #publishmqtt.publish_message
-        print("mqtt sensor=" + simple.getmessage())        
+        #print("mqtt sensor=" + simple.getmessage())        
         #displayData()
         #print("sleeping")
         #time.sleep(sampleFreq)
