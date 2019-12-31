@@ -17,7 +17,7 @@ site_id = 1
 def get_all():  # this is for the chart
     conn = sqlite3.connect(database, check_same_thread=False)
     curs = conn.cursor()
-    curs.execute("SELECT * FROM DHT_data ORDER BY timestamp DESC")
+    curs.execute("SELECT * FROM DHT_data where temp <> 'None' ORDER BY timestamp DESC")
     data = curs.fetchall()
     dates = []
     temps = []
@@ -174,7 +174,7 @@ def get_current_data():  # get current values for display on web page
     current_soiltemp = []
     sensor1 = []
     sensor2 = []
-    for row in curs.execute("SELECT * FROM DHT_data ORDER BY timestamp DESC LIMIT 1"):
+    for row in curs.execute("SELECT * FROM DHT_data WHERE temp <> 'None' ORDER BY timestamp DESC LIMIT 1"):
         current_time = str(row[0])
         current_temp = row[1]
         current_soiltemp = row[3]
