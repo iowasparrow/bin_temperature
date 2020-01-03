@@ -83,7 +83,7 @@ var myChart = new Chart(ctx, {
             fill: false,
             data: [{% for temp in temps %}{{ temp }},{% endfor %}],
     	    backgroundColor: 'green',
-		    borderColor: "green"
+	    borderColor: "green"
         },
         {
             label: 'Soil Temp',
@@ -95,6 +95,7 @@ var myChart = new Chart(ctx, {
 	{
 	label: 'Sensor 1',
 	fill: false,
+	spangaps: true,
 	data: [{% for sensor in sensor1 %}{{ sensor }},{% endfor %}],
 		backgroundColor: 'blue',
 		borderColor: "blue"
@@ -110,7 +111,7 @@ var myChart = new Chart(ctx, {
 
 	]
     },
-		options: {
+	options: {
 	responsive: true,
 	scales: {
             yAxes: [{
