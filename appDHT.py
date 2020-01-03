@@ -6,7 +6,7 @@ import requests
 import time
 import subprocess
 import tempSensor
-#import publishmqtt
+import publishmqtt
 import simple
 #from tempSensor import read_temp
 
@@ -69,6 +69,7 @@ def send_data_to_api(temp,soiltemp,sensor1,sensor2):
     print("This is the Send To API Function")
     print(json.dumps(payload))
     print(json.dumps(headers))
+    publishmqtt.publish_message(sensor1)
     return response
 
 

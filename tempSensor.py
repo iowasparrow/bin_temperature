@@ -6,7 +6,7 @@ os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 
 sensor_1 = '/sys/bus/w1/devices/28-00000b91fb79/w1_slave'
-sensor_2 = '/sys/bus/w1/devices/10-000801d94fd1/w1_slave'
+sensor_2 = '/sys/bus/w1/devices/10-00080235182a/w1_slave'
 
 print ("sensor one exist: "+str(path.exists(sensor_1)))
 print ("sensor two exist: "+str(path.exists(sensor_2)))
@@ -35,6 +35,7 @@ def read_tempsensor1():
             return float(rounded_temp)
     else:
         return(0)
+print("sensor1")
 print(read_tempsensor1())
 
 def read_tempsensor2():
@@ -58,4 +59,5 @@ def read_tempsensor2():
             return float(rounded_temp)
     else:
         return(0)
+print("sensor2")
 print(read_tempsensor2())

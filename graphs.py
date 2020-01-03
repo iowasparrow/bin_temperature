@@ -35,18 +35,14 @@ def get_all():  # this is for the chart
         #siteids.append(row[2])
         soiltemps.append(row[3])
        
-        if row[4] == None:
+        if row[4] == None or row[4] == 0:
             #convert None to null so the chart is happy
-            sensor1.append('null')
-        elif row[4] == 0:
             sensor1.append('null')
         else:
             sensor1.append(row[4])
 
-        if row[5] == None:
+        if row[5] == None or row[5] == 0 or row[5] == 185:
             #convert None to null so the chart is happy
-            sensor2.append('null')
-        elif row[5] == 0:
             sensor2.append('null')
         else:
             sensor2.append(row[5])        
@@ -91,6 +87,11 @@ def check_rapid_rise(current_temp, x):
             "SELECT * FROM DHT_data WHERE timestamp BETWEEN datetime('now', '-8 days') AND datetime('now', '-6 days') LIMIT 1;"):
         temp_week_ago = row[x]
     conn.close()
+    if temp_week_ago == None:
+        temp_week_ago = 0
+    print("WEEK AGO: " + str(temp_week_ago))
+    print("current temp= " + str(current_temp))
+
     temp_difference = current_temp - temp_week_ago
     print('temp difference=', temp_difference)
     if temp_difference >= 3 and current_temp > 32:

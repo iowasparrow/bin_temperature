@@ -102,6 +102,7 @@ var myChart = new Chart(ctx, {
 	{
         label: 'Sensor 2',
         fill: false,
+	spanGaps: true,
         data: [{% for sensor in sensor2 %}{{ sensor }},{% endfor %}],
                 backgroundColor: 'red',
                 borderColor: 'red'
@@ -157,7 +158,7 @@ var myChart = new Chart(ctx, {
         <div class="row">
             <div class="col-sm">
 		        <div class="card">
-              <div class="text-center text-white" style="background-color: green">Sensor 1</div>
+              <div class="text-center text-white" style="background-color: green">Air Temp</div>
                 <div class="card-body">
                 <p class="card-text">
                         Current temp= {{ current_temp }} &#8457;<br>
@@ -175,7 +176,7 @@ var myChart = new Chart(ctx, {
 
             <div class="col-sm">
 		        <div class="card">
-              <div class="text-center text-white" style="background-color: red">Sensor 2</div>
+              <div class="text-center text-white" style="background-color: blue">Sensor 1 - Hot Tub</div>
                 <div class="card-body">
                 <p class="card-text">
                         Current temp= {{ current_sensor1 }} &#8457;<br>
@@ -194,7 +195,7 @@ var myChart = new Chart(ctx, {
             <div class="col-sm">
 
 	<div class="card">
-    <div class="text-center text-white" style="background-color: blue">Sensor 3</div>
+    <div class="text-center text-white" style="background-color: red">Sensor 2 - Cat House</div>
   		<div class="card-body">
     		<p class="card-text">
    	        	Current temp= {{ current_sensor2 }} &#8457;<br>
