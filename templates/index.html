@@ -8,13 +8,29 @@
     <script src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+
+
+
     <!--zoom plugin-->
     <script src="{{ url_for('static', filename='chartzoom/hammerjs2.0.8') }}"></script>
     <script src="{{ url_for('static', filename='chartzoom/chartjs-plugin-zoom0.7.4') }}"></script>
     <!--end zoom plugin-->
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
+<script>
+  $( function() {
+	  $( "#aStartDate" ).datepicker({
+	  	dateFormat: "yy-mm-dd"
+	  });
+	  $( "#aEndDate" ).datepicker({
+                dateFormat: "yy-mm-dd"
+          });
+  } );
+</script>
 
  <script>
   $( function() {
@@ -42,6 +58,14 @@
             {% else %}
                 <span class="badge badge-danger">Server Disconnected</span>
 	    {% endif %}
+            <form action="/bin_temperature/" method="post">
+		<div class="form-group">
+			<!--<label for="start_date">Start Date</label>-->
+			<input type="text" autocomplete="off" class="form-control" id="aStartDate" placeholder="Start Date" name="aStartDate">
+			<input type="text" autocomplete="off" class="form-control" id="aEndDate" placeholder="End Date" name="aEndDate">
+		</div>
+		<button type="submit" class="btn btn-primary">Submit</button>
+  		</form>
 	    </div>
 
 	    <div class="col">

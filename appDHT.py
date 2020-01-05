@@ -70,6 +70,7 @@ def send_data_to_api(temp,soiltemp,sensor1,sensor2):
     print(json.dumps(payload))
     print(json.dumps(headers))
     publishmqtt.publish_message(sensor1)
+    publishmqtt.readCPU()
     return response
 
 
