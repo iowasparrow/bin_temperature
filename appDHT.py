@@ -6,8 +6,9 @@ import requests
 import time
 import subprocess
 import tempSensor
-import publishmqtt
+#import publishmqtt
 import simple
+import paho.mqtt.client as mqtt
 #from tempSensor import read_temp
 
 #dbname = '/home/gsiebrecht/PycharmProjects/bin_temperature/sensorsData.db'
@@ -40,6 +41,17 @@ def getDHTdata():
     soiltemp = xx['data'][0]['c2tmpf']
     #print(xx['data'][0]['c2tmpf'])
     print("got soil temp")
+    
+    client = mqtt.Client()
+    client.connect("192.168.1.153",1883,60);
+    client.publish("home/airtemp", temp, retain=True)
+    #client.disconnect()
+    
+    #client = mqtt.Client()
+    #client.connect("192.168.1.153",1883,60);
+    time.sleep(.2)
+    client.publish("home/soiltemp", soiltemp, retain=True)
+    client.disconnect()
 
     sensor1 = tempSensor.read_tempsensor1()
     sensor2 = tempSensor.read_tempsensor2()    
@@ -48,15 +60,11 @@ def getDHTdata():
 
 # log sensor data on database
 def logData(temp, soiltemp, sensor1, sensor2):
-    fmt = "%Y-%m-%d %H:%M:%S"
-    now_utc = datetime.now(timezone('UTC'))
-    now_central = now_utc.astimezone(timezone('US/Central'))
-    print("time now in appdht:" + now_central.strftime(fmt))
-    formatted_date = now_central.strftime(fmt)
-    #print(formatted_date)
+    now = datetime. now()
+    current_time = now. strftime("%Y-%m-%d %H:%M:%S")    
     conn = sqlite3.connect(dbname)
     curs = conn.cursor()
-    curs.execute("INSERT INTO DHT_data values((?), (?),  (?),  (?),  (?),  (?),  (?), (?),(?), (?))", (formatted_date, temp, siteid, soiltemp, sensor1, sensor2 ,None, None, None, None))
+    curs.execute("INSERT INTO DHT_data values((?), (?),  (?),  (?),  (?),  (?),  (?), (?),(?), (?))", (current_time, temp, siteid, soiltemp, sensor1, sensor2 ,None, None, None, None))
     conn.commit()
     conn.close()
     send_data_to_api(temp, soiltemp, sensor1, sensor2)
@@ -69,8 +77,8 @@ def send_data_to_api(temp,soiltemp,sensor1,sensor2):
     print("This is the Send To API Function")
     print(json.dumps(payload))
     print(json.dumps(headers))
-    publishmqtt.publish_message(sensor1)
-    publishmqtt.readCPU()
+    #publishmqtt.publish_message(sensor1)
+    #publishmqtt.readCPU()
     return response
 
 

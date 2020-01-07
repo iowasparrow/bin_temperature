@@ -27,8 +27,6 @@ def on_connect(client, userdata, flags, rc):
   client.subscribe("home/hottub")
 
 def on_message(client, userdata, msg):
-    #if msg.payload.decode() == "Hello world!":
-    #print("Yes!")
     themessage = msg.payload.decode()
     log_to_database(themessage)
     print(themessage)
@@ -39,5 +37,4 @@ client.connect("192.168.1.153",1883,60)
 
 client.on_connect = on_connect
 client.on_message = on_message
-
 client.loop_forever()

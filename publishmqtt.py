@@ -1,25 +1,40 @@
 #!/usr/bin/env python3
 
 import paho.mqtt.client as mqtt
-
+import tempSensor
 # This is the Publisher
 
-def publish_message(temp):
-    client = mqtt.Client()
-    client.connect("192.168.1.153",1883,60)
-    client.publish("home/hottub", temp ,retain=True);
-    client.disconnect();
-    
+def read_sensor2():
+    temp = tempSensor.read_tempsensor2()
+    (rc, mid) = client.publish("home/cathouse", temp, retain=True);
+
+def read_sensor1():
+    sensor1 = tempSensor.read_tempsensor1()
+    (rc, mid) = client.publish("home/hottub", sensor1, retain=True);
+
+
 def readCPU():
     tempC = int(open('/sys/class/thermal/thermal_zone0/temp').read()) / 1e3
-    tempF = (tempC * 9/5) + 32
-    client = mqtt.Client()
-    client.connect("192.168.1.153",1883,60)
-    client.publish("home/cputemp", tempF ,retain=True);
-    client.disconnect();
+    tempF = round((tempC * 9/5) + 32 ,2 )
+    #client = mqtt.Client()
+    #client.connect("192.168.1.153",1883,60)
+    (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
     
-    #print(tempF)
+def on_publish(client,userdata,mid):
+    print("mid: "+str(mid))
+    print("data published \n")
+    pass
 
-#readCPU()
+def on_connect(client, userdata, flags, rc):
+    print("CONNACK received with code %d." % (rc))
 
-#publish_message()
+client = mqtt.Client("raspberryPI")
+client.on_connect = on_connect
+client.on_publish = on_publish
+client.connect("192.168.1.153",1883,60)
+client.loop_start()
+
+readCPU()
+read_sensor2()
+read_sensor1()
+client.disconnect()
