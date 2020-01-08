@@ -7,13 +7,11 @@ import time
 import subprocess
 import tempSensor
 #import publishmqtt
-import simple
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as publish
 #from tempSensor import read_temp
 
-#dbname = '/home/gsiebrecht/PycharmProjects/bin_temperature/sensorsData.db'
 dbname = '/var/www/html/binweb/bin_temperature/sensorsData.db'
-#dbname = 'sensorsData.db'
 sampleFreq = 1500 # 2 hours
 #  each site id is unique to the customer
 siteid = 1
@@ -29,29 +27,26 @@ def getDHTdata():
     x = r.json()
     #print(x['last_ob']['airtemp[F]'])
     temp = x['last_ob']['airtemp[F]']
-    #print(x['last_ob']['airtemp[F]'])
-
     print("got air temp")
 
     rsoil = {}
     rr = requests.get('http://mesonet.agron.iastate.edu/api/1/currents.json?network=ISUSM&station=BOOI4' , data=rsoil)
     xx = rr.json()
-    #print(type(rr.json())) #shows type as a dict
-    #print(xx)
     soiltemp = xx['data'][0]['c2tmpf']
     #print(xx['data'][0]['c2tmpf'])
     print("got soil temp")
     
-    client = mqtt.Client()
-    client.connect("192.168.1.153",1883,60);
-    client.publish("home/airtemp", temp, retain=True)
+    #client = mqtt.Client()
+    #client.connect("192.168.1.153",1883,60);
+    #client.publish("home/airtemp", temp, retain=True)
+    publish.single("home/airtemp", temp, retain=True, hostname="192.168.1.153", port=1883)
     #client.disconnect()
     
     #client = mqtt.Client()
     #client.connect("192.168.1.153",1883,60);
-    time.sleep(.2)
-    client.publish("home/soiltemp", soiltemp, retain=True)
-    client.disconnect()
+    #time.sleep(.2)
+    publish.single("home/soiltemp", soiltemp, retain=True, hostname="192.168.1.153", port=1883)
+    #client.disconnect()
 
     sensor1 = tempSensor.read_tempsensor1()
     sensor2 = tempSensor.read_tempsensor2()    
@@ -60,11 +55,14 @@ def getDHTdata():
 
 # log sensor data on database
 def logData(temp, soiltemp, sensor1, sensor2):
-    now = datetime. now()
-    current_time = now. strftime("%Y-%m-%d %H:%M:%S")    
+    fmt = "%Y-%m-%d %H:%M:%S"
+    now_utc = datetime.now(timezone('UTC'))
+    now_central = now_utc.astimezone(timezone('US/Central'))
+    formatted_date = now_central.strftime(fmt)
+    print("Formatted Date in appdht: " +formatted_date)
     conn = sqlite3.connect(dbname)
     curs = conn.cursor()
-    curs.execute("INSERT INTO DHT_data values((?), (?),  (?),  (?),  (?),  (?),  (?), (?),(?), (?))", (current_time, temp, siteid, soiltemp, sensor1, sensor2 ,None, None, None, None))
+    curs.execute("INSERT INTO DHT_data values((?), (?),  (?),  (?),  (?),  (?),  (?), (?),(?), (?))", (formatted_date, temp, siteid, soiltemp, sensor1, sensor2 ,None, None, None, None))
     conn.commit()
     conn.close()
     send_data_to_api(temp, soiltemp, sensor1, sensor2)
@@ -95,7 +93,6 @@ def displayData():
 
 # main function
 def main():
-#    while True:
         temp, soiltemp, sensor1, sensor2 = getDHTdata()
         logData(temp, soiltemp, sensor1, sensor2)
         #publishmqtt.publish_message

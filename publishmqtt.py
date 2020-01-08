@@ -12,12 +12,9 @@ def read_sensor1():
     sensor1 = tempSensor.read_tempsensor1()
     (rc, mid) = client.publish("home/hottub", sensor1, retain=True);
 
-
 def readCPU():
     tempC = int(open('/sys/class/thermal/thermal_zone0/temp').read()) / 1e3
     tempF = round((tempC * 9/5) + 32 ,2 )
-    #client = mqtt.Client()
-    #client.connect("192.168.1.153",1883,60)
     (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
     
 def on_publish(client,userdata,mid):

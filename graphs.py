@@ -11,10 +11,52 @@ app = Flask(__name__)
 alert_text_file = '/var/www/html/binweb/bin_temperature/alert_file.txt'
 database = '/var/www/html/binweb/bin_temperature/sensorsData.db'
 
+
 site_id = 1
 
 
 def get_all(start_date='1900-01-01', end_date='2050-01-01'):  # this is for the chart
+    conn = sqlite3.connect(database, check_same_thread=False)
+    curs = conn.cursor()
+    print("start date in getall function: " + start_date)
+    print("end date in getall function: " + end_date)
+    sql = "SELECT * FROM pidata WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp DESC"
+    curs.execute(sql, [start_date, end_date])
+    data = curs.fetchall()
+    dates = []
+    airtemps = []
+    soiltemps = []
+    sensor1 = []
+    sensor2 = []
+    
+    for row in reversed(data):
+        dates.append(datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y %H:%M'))
+        airtemps.append(row[2])
+        # siteids.append(row[2])
+        soiltemps.append(row[4])
+
+        if row[6] is None or row[6] == 0:
+            # convert None to null so the chart is happy
+            sensor1.append('null')
+        else:
+            sensor1.append(row[6])
+
+        if row[7] is None or row[7] == 0 or row[7] == 185:
+            # convert None to null so the chart is happy
+            sensor2.append('null')
+        else:
+            sensor2.append(row[7])
+
+            # sensor3.append(row[6])
+        # sensor4.append(row[7])
+        # sensor5.append(row[8])
+        # sensor6.append(row[9])
+
+    conn.close()
+    return dates, airtemps, soiltemps, sensor1, sensor2
+
+
+def get_all_old(start_date='1900-01-01', end_date='2050-01-01'):  # this is for the chart
     conn = sqlite3.connect(database, check_same_thread=False)
     curs = conn.cursor()
     print("start date in getall function: " + start_date)
