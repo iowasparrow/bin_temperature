@@ -39,14 +39,25 @@ def getDHTdata():
     #client = mqtt.Client()
     #client.connect("192.168.1.153",1883,60);
     #client.publish("home/airtemp", temp, retain=True)
-    publish.single("home/airtemp", temp, retain=True, hostname="192.168.1.153", port=1883)
+    #publish.single("home/airtemp", temp, retain=True, hostname="192.168.1.153", port=1883)
     #client.disconnect()
     
     #client = mqtt.Client()
     #client.connect("192.168.1.153",1883,60);
     #time.sleep(.2)
-    publish.single("home/soiltemp", soiltemp, retain=True, hostname="192.168.1.153", port=1883)
+    #publish.single("home/soiltemp", soiltemp, retain=True, hostname="192.168.1.153", port=1883)
     #client.disconnect()
+
+
+    client = mqtt.Client()
+    client.connect("192.168.1.153",1883,60);
+    client.publish("home/airtemp", temp, retain=True)
+    client.publish("home/soiltemp", temp, retain=True)
+    client.disconnect()
+
+    
+
+
 
     sensor1 = tempSensor.read_tempsensor1()
     sensor2 = tempSensor.read_tempsensor2()    
