@@ -29,6 +29,7 @@ sleep 20
 #sudo -H -u pi /usr/bin/python3 /var/www/html/binweb/bin_temperature/subMqtt.py &
 
 crontab settings
+
 */15 * * * * /usr/bin/python3 /var/www/html/binweb/bin_temperature/appDHT.py
 5 */1 * * * /usr/bin/python3 /var/www/html/binweb/bin_temperature/check_lowtemp.py
 */1 * * * * /usr/bin/python3 /var/www/html/binweb/bin_temperature/publishmqtt.py
