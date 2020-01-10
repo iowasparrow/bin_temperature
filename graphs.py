@@ -5,6 +5,7 @@ from werkzeug.utils import redirect
 from datetime import datetime, timezone, timedelta
 import createTable as createTable
 import pprint
+import socket
 
 app = Flask(__name__)
 
@@ -255,7 +256,8 @@ def index():
         dates, temps, soiltemps, cputemps, sensor1, sensor2 = get_all(x, end_date)
 
     current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp, current_sensor1, current_sensor2, temp_difference1, temp_week_ago1, temp_difference2, temp_week_ago2 = get_current_data()
-    
+   
+
     rows = number_records()
     temp_alarm = set_temp_alarm("check_status")
     # pin_status = check_relay_status()

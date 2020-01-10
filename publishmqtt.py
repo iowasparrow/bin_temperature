@@ -79,8 +79,8 @@ def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
     client.on_connect = on_connect
     client.on_publish = on_publish
     try:
-        #client.connect("192.168.1.153",1883,60)
-        client.connect("192.168.9.102",1883,60)
+        client.connect("192.168.1.153",1883,60)
+        #client.connect("192.168.9.102",1883,60)
     except:
         print("connection failed cannt reach the broker")
         exit(1)
