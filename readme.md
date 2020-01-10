@@ -35,5 +35,9 @@ crontab settings
 */1 * * * * /usr/bin/python3 /var/www/html/binweb/bin_temperature/publishmqtt.py
 */1 * * * * /usr/bin/python3 /var/www/html/binweb/bin_temperature/logger.py
 
+Web server settings3
+sudo apt-get install apache2 
+sudo apt-get install libapache2-mod-wsgi-py3
 
+pip3 install flask
 
