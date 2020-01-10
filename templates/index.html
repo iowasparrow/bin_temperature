@@ -191,7 +191,8 @@ var myChart = new Chart(ctx, {
                                 Temp increase from 1 week ago = {{ temp_difference }}<br>
                         {% else %}
                                 Temp decrease from 1 week ago = {{ temp_difference }}<br>
-                        {% endif %}
+                        {% endif %}<br>
+			{{  current_time  }}
                 </p>
                 </div>
         </div>

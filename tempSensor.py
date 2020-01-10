@@ -59,5 +59,10 @@ def read_tempsensor2():
             return float(rounded_temp)
     else:
         return(0)
+
+
+#print("sensor1")
+#print(read_tempsensor1())
+
 #print("sensor2")
 #print(read_tempsensor2())

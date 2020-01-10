@@ -26,26 +26,34 @@ def get_all(start_date='1900-01-01', end_date='2050-01-01'):  # this is for the 
     dates = []
     airtemps = []
     soiltemps = []
+    cputemps= []
     sensor1 = []
     sensor2 = []
     
     for row in reversed(data):
         dates.append(datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y %H:%M'))
+        #topic
         airtemps.append(row[2])
-        # siteids.append(row[2])
+        # siteids.append(row[3])
         soiltemps.append(row[4])
+        #humidity5
+        if row[6] is None or row[6] == 0: 
+            # convert None to null so the chart is happy 
+            cputemps.append('null') 
+        else: 
+            cputemps.append(row[6])
 
-        if row[6] is None or row[6] == 0:
+        if row[7] is None or row[7] == 0:
             # convert None to null so the chart is happy
             sensor1.append('null')
         else:
-            sensor1.append(row[6])
+            sensor1.append(row[7])
 
-        if row[7] is None or row[7] == 0 or row[7] == 185:
+        if row[8] is None or row[8] == 0 or row[8] == 185:
             # convert None to null so the chart is happy
             sensor2.append('null')
         else:
-            sensor2.append(row[7])
+            sensor2.append(row[8])
 
             # sensor3.append(row[6])
         # sensor4.append(row[7])
@@ -53,7 +61,7 @@ def get_all(start_date='1900-01-01', end_date='2050-01-01'):  # this is for the 
         # sensor6.append(row[9])
 
     conn.close()
-    return dates, airtemps, soiltemps, sensor1, sensor2
+    return dates ,airtemps, soiltemps, cputemps, sensor1, sensor2
 
 
 def get_all_old(start_date='1900-01-01', end_date='2050-01-01'):  # this is for the chart
@@ -76,7 +84,7 @@ def get_all_old(start_date='1900-01-01', end_date='2050-01-01'):  # this is for 
     # sensor6 = []
     for row in reversed(data):
         dates.append(datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y %H:%M'))
-        temps.append(row[1])
+        temps.append(row[3])
         # siteids.append(row[2])
         soiltemps.append(row[3])
 
@@ -122,7 +130,7 @@ def check_rapid_rise(current_temp, x):
     curs = conn.cursor()
     temp_week_ago = 0
     for row in curs.execute(
-            "SELECT * FROM DHT_data WHERE timestamp BETWEEN datetime('now', '-8 days') AND datetime('now', '-6 days') LIMIT 1;"):
+            "SELECT * FROM pidata WHERE timestamp BETWEEN datetime('now', '-8 days') AND datetime('now', '-6 days') LIMIT 1;"):
         temp_week_ago = row[x]
     conn.close()
     if temp_week_ago is None:
@@ -160,7 +168,7 @@ def check_timer():
     timer_started = datetime.strptime(timer_start, '%Y-%m-%d %H:%M:%S.%f')
     delta = now - timer_started
     # fixed_delta = timedelta(hours=2)
-    if delta > timedelta(hours=2):
+    if delta > timedelta(hours=24):
         # print("timer function says cancel, timer enough time has passed")
         cancel = True
     else:
@@ -213,18 +221,18 @@ def get_current_data():  # get current values for display on web page
     current_soiltemp = []
     sensor1 = []
     sensor2 = []
-    for row in curs.execute("SELECT * FROM DHT_data WHERE temp <> 'None' ORDER BY timestamp DESC LIMIT 1"):
+    for row in curs.execute("SELECT * FROM pidata ORDER BY timestamp DESC LIMIT 1"):
         current_time = str(row[0])
-        current_temp = row[1]
-        current_soiltemp = row[3]
-        current_sensor1 = row[4]
-        current_sensor2 = row[5]
+        current_temp = row[2]
+        current_soiltemp = row[4]
+        current_sensor1 = row[7]
+        current_sensor2 = row[8]
     conn.close()
 
     # send current temp and databse row to check for rapid rise
-    temp_difference, temp_week_ago = check_rapid_rise(current_temp, 1)
-    temp_difference1, temp_week_ago1 = check_rapid_rise(current_sensor1, 4)
-    temp_difference2, temp_week_ago2 = check_rapid_rise(current_sensor2, 5)
+    temp_difference, temp_week_ago = check_rapid_rise(current_temp, 2)
+    temp_difference1, temp_week_ago1 = check_rapid_rise(current_sensor1, 7)
+    temp_difference2, temp_week_ago2 = check_rapid_rise(current_sensor2, 8)
 
     return current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp, current_sensor1, current_sensor2, temp_difference1, temp_week_ago1, temp_difference2, temp_week_ago2
 
@@ -234,20 +242,20 @@ def index():
     x = "0"
     print("hello")
     if not request.values.get("aStartDate") and not request.values.get("aEndDate"):
-        dates, temps, soiltemps, sensor1, sensor2 = get_all()
+        dates, temps, soiltemps, cputemps, sensor1, sensor2 = get_all()
     if request.values.get("aStartDate") and request.values.get("aEndDate"):
         start_date = request.values.get("aStartDate")
         end_date = request.values.get("aEndDate")
-        dates, temps, soiltemps, sensor1, sensor2 = get_all(start_date, end_date)
+        dates, temps, soiltemps, cputemps, sensor1, sensor2 = get_all(start_date, end_date)
     if request.values.get("aStartDate") and not request.values.get("aEndDate"):
         start_date = request.values.get("aStartDate")
-        dates, temps, soiltemps, sensor1, sensor2 = get_all(start_date)
+        dates, temps, soiltemps, cputemps, sensor1, sensor2 = get_all(start_date)
     if request.values.get("aEndDate") and not request.values.get("aStartDate"):
         end_date = request.values.get("aEndDate")
-        dates, temps, soiltemps, sensor1, sensor2 = get_all(x, end_date)
+        dates, temps, soiltemps, cputemps, sensor1, sensor2 = get_all(x, end_date)
 
     current_time, current_temp, temp_difference, temp_week_ago, current_soiltemp, current_sensor1, current_sensor2, temp_difference1, temp_week_ago1, temp_difference2, temp_week_ago2 = get_current_data()
-    # dates, temps, soiltemps, sensor1, sensor2 = get_all()
+    
     rows = number_records()
     temp_alarm = set_temp_alarm("check_status")
     # pin_status = check_relay_status()
@@ -268,7 +276,7 @@ def index():
                            temp_difference1=temp_difference1, temp_week_ago1=temp_week_ago1,
                            temp_difference2=temp_difference2, temp_week_ago2=temp_week_ago2, temp_alarm=temp_alarm,
                            temps=temps, soiltemps=soiltemps, dates=dates, current_time=current_time, rows=rows,
-                           current_temp=current_temp, pin_status=pin_status, current_sensor1=current_sensor1,
+                           current_temp=current_temp, cputemps=cputemps, pin_status=pin_status, current_sensor1=current_sensor1,
                            current_sensor2=current_sensor2, server_up="no")
 
 
