@@ -40,4 +40,6 @@ sudo apt-get install apache2
 sudo apt-get install libapache2-mod-wsgi-py3
 
 pip3 install flask
-
+pip install paho-mqtt
+ pip3 install pytz
+ sudo apt-get install sqlite3

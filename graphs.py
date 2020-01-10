@@ -118,7 +118,7 @@ def something():
 def number_records():  # display number of recoreds
     conn = sqlite3.connect(database, check_same_thread=False)
     curs = conn.cursor()
-    curs.execute("SELECT COUNT (*) FROM DHT_data")
+    curs.execute("SELECT COUNT (*) FROM pidata")
     datapoints = curs.fetchall()
     # print('\nTotal rows: {}'.format(datapoints[0][0]))
     conn.close()
