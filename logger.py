@@ -12,13 +12,12 @@ airtemp_topic = "home/airtemp"
 soiltemp_topic = "home/soiltemp"
 picpu_topic = "home/cputemp"
 
+print("here")
+
 dbname = '/var/www/html/binweb/bin_temperature/sensorsData.db'
 
 dataTuple = [-1,-1,-1,-1,-1]
 
-client = mqtt.Client()
-client.connect("192.168.1.153", 1883, 60)
-# The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
 
@@ -74,9 +73,17 @@ def writeToDb(theTime, sensor1, sensor2, airtemp, soiltemp, picpu):
     #dataTuple = [-1, -1]
 print("sleeping 15 seconds, wait for the cron job to do its thing in case they fire at the same time")
 time.sleep(15)
+
 client = mqtt.Client()
-client.connect("192.168.1.153", 1883, 60)
-client.loop_start()
+try:
+    print("trying to connect, will try for 30 seconds")
+    #client.connect("192.168.1.153", 1883, 60)
+    client.connect("bintemp.com",1883 , 60)
+    client.loop_start()
+except:
+    print("can't reach the broker")
+    exit(1)
+
 client.on_connect = on_connect
 print("connecting to broker")
 client.on_message = on_message
@@ -92,3 +99,4 @@ client.loop_stop()
 # manual interface.
 #client.loop_forever()
 #client.loop_start()
+

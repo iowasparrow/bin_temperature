@@ -11,6 +11,7 @@ dbname = '/var/www/html/binweb/bin_temperature/sensorsData.db'
 
 # publish to broker and log to database
 
+
 def read_sensor2():
     sensor2 = tempSensor.read_tempsensor2()
     #(rc, mid) = client.publish("home/cathouse", sensor2, retain=True);
@@ -79,17 +80,16 @@ def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
     client.on_connect = on_connect
     client.on_publish = on_publish
     try:
-        client.connect("192.168.1.153",1883,60)
-        #client.connect("192.168.9.102",1883,60)
+        client.connect("bintemp.com",1883,60)
     except:
         print("connection failed cannt reach the broker")
         exit(1)
     client.loop_start()
-    (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
-    (rc, mid) = client.publish("home/hottub", sensor1, retain=True);
-    (rc, mid) = client.publish("home/cathouse", sensor2, retain=True);
-    (rc, mid) = client.publish("home/airtemp", airtemp, qos=1,retain=True);
-    (rc, mid) = client.publish("home/soiltemp", soiltemp, qos=1,retain=True);
+    (rc, mid) = client.publish("crash/cputemp", tempF, qos=1,retain=True);
+    (rc, mid) = client.publish("crash/hottub", sensor1, retain=True);
+    (rc, mid) = client.publish("crash/cathouse", sensor2, retain=True);
+    (rc, mid) = client.publish("crash/airtemp", airtemp, qos=1,retain=True);
+    (rc, mid) = client.publish("crash/soiltemp", soiltemp, qos=1,retain=True);
     client.loop_stop()
     client.disconnect()
 
