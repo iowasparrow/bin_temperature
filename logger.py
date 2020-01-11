@@ -1,3 +1,29 @@
+
+
+
+
+
+
+
+
+
+
+
+#dont use
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #!/usr/bin/env python3
 from time import gmtime, strftime
 import paho.mqtt.client as mqtt

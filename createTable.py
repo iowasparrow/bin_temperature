@@ -49,6 +49,6 @@ def create_timer():
 
 
 #create_timer()
-#pidata()
-#pihq()
-pitopic()
+pidata()
+pihq()
+#pitopic()

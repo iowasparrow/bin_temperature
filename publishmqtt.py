@@ -8,9 +8,8 @@ from datetime import datetime
 from pytz import timezone
 
 dbname = '/var/www/html/binweb/bin_temperature/sensorsData.db'
-
+siteid = 1
 # publish to broker and log to database
-
 
 def read_sensor2():
     sensor2 = tempSensor.read_tempsensor2()
@@ -49,7 +48,19 @@ def get_soiltemp():
     #print("got soil temp= " + str(soiltemp))
     return soiltemp
 
-def log_to_database(sensor2,sensor1,airtemp,soiltemp,picpu):
+def send_data_to_api(siteid, sensor2, sensor1, airtemp, soiltemp, picpu): 
+    url = 'http://bintemp.com/binapi/api/insert' 
+    payload = {"airtemp": airtemp, "siteid": siteid, "soiltemp": soiltemp, "sensor1":sensor1, "sensor2":sensor2, "picpu": picpu} 
+    headers = {'content-type': 'application/json'} 
+    response = requests.post(url, data=json.dumps(payload), headers=headers) 
+    print(siteid)
+    print(json.dumps(payload)) 
+    print(json.dumps(headers)) 
+    #publishmqtt.publish_message(sensor1) 
+    #publishmqtt.readCPU() 
+    return response
+
+def log_to_database(siteid,sensor2,sensor1,airtemp,soiltemp,picpu):
     fmt = "%Y-%m-%d %H:%M:%S"
     now_utc = datetime.now(timezone('UTC'))
     now_central = now_utc.astimezone(timezone('US/Central'))
@@ -57,7 +68,7 @@ def log_to_database(sensor2,sensor1,airtemp,soiltemp,picpu):
     #print("Formatted Date: " +formatted_date)
     conn = sqlite3.connect(dbname)
     curs = conn.cursor()
-    curs.execute("INSERT INTO pidata VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (formatted_date, None, airtemp, None, soiltemp, None, picpu, sensor1, sensor2, None, None, None ,None ))
+    curs.execute("INSERT INTO pidata VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (formatted_date, siteid, airtemp, None, soiltemp, None, picpu, sensor1, sensor2, None, None, None ,None ))
     conn.commit()
     conn.close()
 
@@ -80,16 +91,17 @@ def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
     client.on_connect = on_connect
     client.on_publish = on_publish
     try:
-        client.connect("bintemp.com",1883,60)
+        client.connect("192.168.1.153",1883,60)
+        #client.connect("192.168.9.102",1883,60)
     except:
         print("connection failed cannt reach the broker")
         exit(1)
     client.loop_start()
-    (rc, mid) = client.publish("crash/cputemp", tempF, qos=1,retain=True);
-    (rc, mid) = client.publish("crash/hottub", sensor1, retain=True);
-    (rc, mid) = client.publish("crash/cathouse", sensor2, retain=True);
-    (rc, mid) = client.publish("crash/airtemp", airtemp, qos=1,retain=True);
-    (rc, mid) = client.publish("crash/soiltemp", soiltemp, qos=1,retain=True);
+    (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
+    (rc, mid) = client.publish("home/hottub", sensor1, retain=True);
+    (rc, mid) = client.publish("home/cathouse", sensor2, retain=True);
+    (rc, mid) = client.publish("home/airtemp", airtemp, qos=1,retain=True);
+    (rc, mid) = client.publish("home/soiltemp", soiltemp, qos=1,retain=True);
     client.loop_stop()
     client.disconnect()
 
@@ -102,8 +114,8 @@ soiltemp = get_soiltemp()
 
 
 print("logging to database first, in case the broker is down.")
-log_to_database(sensor2,sensor1,airtemp,soiltemp,picpu)
-
+log_to_database(siteid,sensor2,sensor1,airtemp,soiltemp,picpu)
+send_data_to_api(siteid,sensor2,sensor1,airtemp,soiltemp,picpu)
 
 sendtobroker(picpu,sensor1,sensor2,airtemp,soiltemp)
 
@@ -115,5 +127,3 @@ sendtobroker(picpu,sensor1,sensor2,airtemp,soiltemp)
 
 #client.loop_stop()
 #client.disconnect()
-print("logging to database")
-log_to_database(sensor2,sensor1,airtemp,soiltemp,picpu)
