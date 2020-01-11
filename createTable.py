@@ -21,6 +21,15 @@ def pidata():
         cur.execute("DROP TABLE IF EXISTS pidata")
         cur.execute("CREATE TABLE pidata(timestamp DATETIME, topic TEXT, airtemp NUMERIC, siteid NUMERIC, soiltemp NUMERIC, humidity NUMERIC, picpu NUMERIC, sensor1 NUMERIC, sensor2 NUMERIC, sensor3 NUMERIC, sensor4 NUMERIC, sensor5 NUMERIC, sensor6 NUMERIC)")
 
+def pitopic():
+    con = lite.connect(database)
+    with con:
+        cur = con.cursor()
+        print("dropping table pitopics if exists")
+        cur.execute("DROP TABLE IF EXISTS pitopics")
+        cur.execute("CREATE TABLE pitopics(timestamp DATETIME, topic TEXT, payload NUMERIC)")
+
+
 def pihq():
     con = lite.connect(database)
     with con:
@@ -42,4 +51,4 @@ def create_timer():
 #create_timer()
 #pidata()
 #pihq()
-
+pitopic()
