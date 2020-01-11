@@ -11,12 +11,13 @@ sensor1_topic = "home/hottub"
 airtemp_topic = "home/airtemp"
 soiltemp_topic = "home/soiltemp"
 picpu_topic = "home/cputemp"
-
+crash_topic_picpu = "crash/cputemp"
 print("here")
 
 dbname = '/var/www/html/binweb/bin_temperature/sensorsData.db'
 
 dataTuple = [-1,-1,-1,-1,-1]
+crashTUple = [-1]
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -28,6 +29,7 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe(airtemp_topic)
     client.subscribe(soiltemp_topic)
     client.subscribe(picpu_topic)
+    client.subscribe(crash_picpu_topic)
 
 
 # The callback for when a PUBLISH message is received from the server.
@@ -36,10 +38,6 @@ def on_message(client, userdata, msg):
     now_utc = datetime.now(timezone('UTC'))
     now_central = now_utc.astimezone(timezone('US/Central'))
     theTime = now_central.strftime(fmt)
-    #theTime = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-
-    #print(theTime)
-
     #theTime = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
     result = (theTime + "\t" + str(msg.payload))
@@ -55,8 +53,12 @@ def on_message(client, userdata, msg):
         dataTuple[3] = msg.payload.decode()
     if (msg.topic == picpu_topic):
         dataTuple[4] = msg.payload.decode()
+
+     if (msg.topic == crash_picpu_topic):
+        crashTuple[0] = msg.payload.decode()
         #return
     
+
     if (dataTuple[0] != -1 and dataTuple[1] != -1 and dataTuple[2] != -1 and dataTuple[3] != -1 and dataTuple[4] != -1):
         writeToDb(theTime, dataTuple[0], dataTuple[1], dataTuple[2], dataTuple[3], dataTuple[4])
     return

@@ -3,7 +3,6 @@ import sqlite3
 import os
 from werkzeug.utils import redirect
 from datetime import datetime, timezone, timedelta
-import createTable as createTable
 import pprint
 import socket
 
@@ -64,56 +63,6 @@ def get_all(start_date='1900-01-01', end_date='2050-01-01'):  # this is for the 
     conn.close()
     return dates ,airtemps, soiltemps, cputemps, sensor1, sensor2
 
-
-def get_all_old(start_date='1900-01-01', end_date='2050-01-01'):  # this is for the chart
-    conn = sqlite3.connect(database, check_same_thread=False)
-    curs = conn.cursor()
-    print("start date in getall function: " + start_date)
-    print("end date in getall function: " + end_date)
-    sql = "SELECT * FROM DHT_data where temp <> 'None' AND timestamp >= ? AND timestamp <= ? ORDER BY timestamp DESC"
-    curs.execute(sql, [start_date, end_date])
-    data = curs.fetchall()
-    dates = []
-    temps = []
-    # siteids = []
-    soiltemps = []
-    sensor1 = []
-    sensor2 = []
-    # sensor3 = []
-    # sensor4 = []
-    # sensor5 = []
-    # sensor6 = []
-    for row in reversed(data):
-        dates.append(datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y %H:%M'))
-        temps.append(row[3])
-        # siteids.append(row[2])
-        soiltemps.append(row[3])
-
-        if row[4] is None or row[4] == 0:
-            # convert None to null so the chart is happy
-            sensor1.append('null')
-        else:
-            sensor1.append(row[4])
-
-        if row[5] is None or row[5] == 0 or row[5] == 185:
-            # convert None to null so the chart is happy
-            sensor2.append('null')
-        else:
-            sensor2.append(row[5])
-
-            # sensor3.append(row[6])
-        # sensor4.append(row[7])
-        # sensor5.append(row[8])
-        # sensor6.append(row[9])
-
-    conn.close()
-    return dates, temps, soiltemps, sensor1, sensor2
-
-
-@app.route("/reset", methods=['GET', 'POST'])
-def something():
-    createTable.reset()
-    return "table was reset"
 
 
 def number_records():  # display number of recoreds
