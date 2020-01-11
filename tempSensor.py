@@ -5,8 +5,10 @@ from os import path
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 
-sensor_1 = '/sys/bus/w1/devices/28-0000035b0c33/w1_slave'
+#sensor_1 = '/sys/bus/w1/devices/28-0000035b0c33/w1_slave'
 sensor_2 = '/sys/bus/w1/devices/10-00080235182a/w1_slave'
+sensor_1 = '/sys/bus/w1/devices/28-00000b91fb79/w1_slave'
+
 
 #print ("sensor one exist: "+str(path.exists(sensor_1)))
 #print ("sensor two exist: "+str(path.exists(sensor_2)))

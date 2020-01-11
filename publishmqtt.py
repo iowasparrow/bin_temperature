@@ -107,7 +107,13 @@ def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
 
 
 sensor1 = read_sensor1()
-sensor2 = read_sensor2()
+
+try:
+    sensor2 = read_sensor2()
+except:
+    print("no sensor 2 setting to none")
+    sensor2 = None
+
 picpu = read_CPU()
 airtemp = get_airtemp()
 soiltemp = get_soiltemp()
