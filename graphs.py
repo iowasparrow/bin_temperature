@@ -163,6 +163,9 @@ def check_timer():
     timer_start = []
     for row in curs.execute("SELECT * FROM tbl_timer"):
         timer_start = row[0]
+    if timer_start == []:
+        cancel = False
+        return cancel
     conn.close()
     # print(timer_start)
     now = datetime.now()
@@ -241,7 +244,6 @@ def get_current_data():  # get current values for display on web page
 @app.route("/", methods=['GET', 'POST'])
 def index():
     x = "0"
-    print("hello")
     if not request.values.get("aStartDate") and not request.values.get("aEndDate"):
         dates, temps, soiltemps, cputemps, sensor1, sensor2 = get_all()
     if request.values.get("aStartDate") and request.values.get("aEndDate"):
