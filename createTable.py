@@ -48,7 +48,7 @@ def create_timer():
         cur.execute("CREATE TABLE tbl_timer(timestamp DATETIME);")
 
 
-#create_timer()
+create_timer()
 pidata()
 pihq()
-#pitopic()
+pitopic()
