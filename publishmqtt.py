@@ -13,18 +13,15 @@ siteid = 1
 
 def read_sensor2():
     sensor2 = tempSensor.read_tempsensor2()
-    #(rc, mid) = client.publish("home/cathouse", sensor2, retain=True);
     return sensor2
 
 def read_sensor1():
     sensor1 = tempSensor.read_tempsensor1()
-    #(rc, mid) = client.publish("home/hottub", sensor1, retain=True);
     return sensor1
 
 def read_CPU():
     tempC = int(open('/sys/class/thermal/thermal_zone0/temp').read()) / 1e3
     tempF = round((tempC * 9/5) + 32 ,2 )
-    #(rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
     return tempF
 
 def get_airtemp():
