@@ -53,7 +53,7 @@ def send_data_to_api(siteid, sensor2, sensor1, airtemp, soiltemp, picpu):
     payload = {"airtemp": airtemp, "siteid": siteid, "soiltemp": soiltemp, "sensor1":sensor1, "sensor2":sensor2, "picpu": picpu} 
     headers = {'content-type': 'application/json'} 
     response = requests.post(url, data=json.dumps(payload), headers=headers) 
-    print(siteid)
+    print("siteid = " + str(siteid))
     print(json.dumps(payload)) 
     print(json.dumps(headers)) 
     #publishmqtt.publish_message(sensor1) 
