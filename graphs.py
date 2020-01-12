@@ -82,10 +82,15 @@ def check_rapid_rise(current_temp, x):
     for row in curs.execute(
             "SELECT * FROM pidata WHERE timestamp BETWEEN datetime('now', '-8 days') AND datetime('now', '-6 days') LIMIT 1;"):
         temp_week_ago = row[x]
+        if temp_week_ago == "":
+            temp_week_ago = 0
     conn.close()
     if temp_week_ago is None:
         temp_week_ago = 0
-
+    if current_temp == None:
+        current_temp = 0
+    print("temp week ago: " + str(temp_week_ago))
+    print("current temp " + str(current_temp))
     temp_difference = current_temp - temp_week_ago
     if temp_difference >= 3 and current_temp > 32:
         # print("DANGER RAPID RISE DETECTED 3 degrees in one week at 32.")
@@ -173,7 +178,7 @@ def get_current_data():  # get current values for display on web page
     current_temp = []
     current_soiltemp = []
     sensor1 = []
-    sensor2 = []
+    sensor2 = [ ]
     for row in curs.execute("SELECT * FROM pidata ORDER BY timestamp DESC LIMIT 1"):
         current_time = str(row[0])
         current_temp = row[2]
@@ -181,6 +186,13 @@ def get_current_data():  # get current values for display on web page
         current_sensor1 = row[7]
         current_sensor2 = row[8]
     conn.close()
+    
+    if current_sensor2 == None:
+        current_sensor2 = -1
+
+    print("one" + str(current_sensor1))
+    print("two" + str(current_sensor2))
+    
 
     # send current temp and databse row to check for rapid rise
     temp_difference, temp_week_ago = check_rapid_rise(current_temp, 2)
