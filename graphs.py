@@ -89,8 +89,8 @@ def check_rapid_rise(current_temp, x):
         temp_week_ago = 0
     if current_temp == None:
         current_temp = 0
-    print("temp week ago: " + str(temp_week_ago))
-    print("current temp " + str(current_temp))
+    #print("temp week ago: " + str(temp_week_ago))
+    #print("current temp " + str(current_temp))
     temp_difference = current_temp - temp_week_ago
     if temp_difference >= 3 and current_temp > 32:
         # print("DANGER RAPID RISE DETECTED 3 degrees in one week at 32.")
@@ -190,9 +190,6 @@ def get_current_data():  # get current values for display on web page
     if current_sensor2 == None:
         current_sensor2 = -1
 
-    print("one" + str(current_sensor1))
-    print("two" + str(current_sensor2))
-    
 
     # send current temp and databse row to check for rapid rise
     temp_difference, temp_week_ago = check_rapid_rise(current_temp, 2)

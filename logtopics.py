@@ -55,8 +55,8 @@ def writeToDb(theTime, mytopic, mypayload):
 
     #global dataTuple
     #dataTuple = [-1, -1]
-print("sleeping 30 seconds, two cron jobs are scheduled on the minute.")
-time.sleep(30)
+print("sleeping 3 seconds, two cron jobs are scheduled on the minute.")
+time.sleep(3)
 
 client = mqtt.Client()
 try:
