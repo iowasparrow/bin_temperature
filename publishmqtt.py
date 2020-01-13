@@ -6,9 +6,14 @@ import json
 import sqlite3
 from datetime import datetime
 from pytz import timezone
+from time import sleep
+import random
 
 dbname = '/var/www/html/binweb/bin_temperature/sensorsData.db'
 siteid = 1 
+#sleep becasue we have other cron jobs startin at the same time
+sleep(random.randrange(3,10))
+
 # publish to broker and log to database
 
 def read_sensor2():
@@ -91,7 +96,7 @@ def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
         client.connect("192.168.1.153",1883,60)
         #client.connect("192.168.9.102",1883,60)
     except:
-        print("connection failed cannt reach the broker")
+        print("connection failed can not reach the broker")
         exit(1)
     client.loop_start()
     (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
@@ -118,7 +123,12 @@ soiltemp = get_soiltemp()
 
 print("logging to database first, in case the broker is down.")
 log_to_database(siteid,sensor2,sensor1,airtemp,soiltemp,picpu)
-send_data_to_api(siteid,sensor2,sensor1,airtemp,soiltemp,picpu)
+print("done logging to database")
+
+try:
+    send_data_to_api(siteid,sensor2,sensor1,airtemp,soiltemp,picpu)
+except:
+    print("cannot find the api server")
 
 sendtobroker(picpu,sensor1,sensor2,airtemp,soiltemp)
 
