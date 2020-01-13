@@ -130,7 +130,18 @@ var myChart = new Chart(ctx, {
         data: [{% for sensor in sensor2 %}{{ sensor }},{% endfor %}],
                 backgroundColor: 'red',
                 borderColor: 'red'
+        },
+	
+        {
+        label: 'CPU Temp',
+        fill: false,
+        spanGaps: true,
+        data: [{% for cputemp in cputemps %}{{ cputemp }},{% endfor %}],
+                backgroundColor: 'yellow',
+                borderColor: 'yellow'
         }
+
+
 
 	]
     },
