@@ -128,7 +128,7 @@ print("done logging to database")
 try:
     send_data_to_api(siteid,sensor2,sensor1,airtemp,soiltemp,picpu)
 except:
-    print("cannot find the api server")
+    print("cannot find the api server, will try the broker for the next 30 seconds")
 
 sendtobroker(picpu,sensor1,sensor2,airtemp,soiltemp)
 
