@@ -8,7 +8,7 @@ from datetime import datetime
 from pytz import timezone
 
 dbname = '/var/www/html/binweb/bin_temperature/sensorsData.db'
-siteid = 2 
+siteid = 1 
 # publish to broker and log to database
 
 def read_sensor2():
@@ -94,11 +94,11 @@ def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
         print("connection failed cannt reach the broker")
         exit(1)
     client.loop_start()
-    (rc, mid) = client.publish("crash/cputemp", tempF, qos=1,retain=True);
-    (rc, mid) = client.publish("crash/livingroom", sensor1, retain=True);
-    (rc, mid) = client.publish("crash/cathouse", sensor2, retain=True);
-    (rc, mid) = client.publish("crash/airtemp", airtemp, qos=1,retain=True);
-    (rc, mid) = client.publish("crash/soiltemp", soiltemp, qos=1,retain=True);
+    (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
+    (rc, mid) = client.publish("home/livingroom", sensor1, retain=True);
+    (rc, mid) = client.publish("home/cathouse", sensor2, retain=True);
+    (rc, mid) = client.publish("home/airtemp", airtemp, qos=1,retain=True);
+    (rc, mid) = client.publish("home/soiltemp", soiltemp, qos=1,retain=True);
     client.loop_stop()
     client.disconnect()
 
