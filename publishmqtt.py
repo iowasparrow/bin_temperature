@@ -10,7 +10,7 @@ from time import sleep
 import random
 
 dbname = '/var/www/html/binweb/bin_temperature/sensorsData.db'
-siteid = 1 
+siteid = 3 
 #sleep becasue we have other cron jobs startin at the same time
 sleep(random.randrange(3,10))
 
