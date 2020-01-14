@@ -117,7 +117,6 @@ except:
 try:
     sensor2 = read_sensor2()
 except:
-    print("no sensor 2 setting to none")
     sensor2 = None
 
 
