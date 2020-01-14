@@ -64,7 +64,7 @@ def read_tempsensor2():
 
 
 #print("sensor1")
-#print(read_tempsensor1())
+print(read_tempsensor1())
 
 #print("sensor2")
-#print(read_tempsensor2())
+print(read_tempsensor2())

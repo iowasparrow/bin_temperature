@@ -14,6 +14,7 @@ siteid = 1
 #sleep becasue we have other cron jobs startin at the same time
 sleep(random.randrange(3,10))
 
+
 # publish to broker and log to database
 
 def read_sensor2():
@@ -100,7 +101,7 @@ def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
         exit(1)
     client.loop_start()
     (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
-    (rc, mid) = client.publish("home/livingroom", sensor1, retain=True);
+    (rc, mid) = client.publish("home/hottub", sensor1, retain=True);
     (rc, mid) = client.publish("home/cathouse", sensor2, retain=True);
     (rc, mid) = client.publish("home/airtemp", airtemp, qos=1,retain=True);
     (rc, mid) = client.publish("home/soiltemp", soiltemp, qos=1,retain=True);
@@ -110,11 +111,11 @@ def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
 
 sensor1 = read_sensor1()
 
-try:
-    sensor2 = read_sensor2()
-except:
-    print("no sensor 2 setting to none")
-    sensor2 = None
+#try:
+sensor2 = read_sensor2()
+#except:
+#    print("no sensor 2 setting to none")
+#    sensor2 = None
 
 picpu = read_CPU()
 airtemp = get_airtemp()

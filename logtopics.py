@@ -61,8 +61,8 @@ time.sleep(3)
 client = mqtt.Client()
 try:
     print("trying to connect, will try for 30 seconds")
-    #client.connect("192.168.1.153", 1883, 60)
-    client.connect("bintemp.com",1883 , 60)
+    client.connect("192.168.9.100", 1883, 60)
+    #client.connect("bintemp.com",1883 , 60)
     client.loop_start()
 except:
     print("can't reach the broker")
