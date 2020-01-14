@@ -187,9 +187,6 @@ def get_current_data():  # get current values for display on web page
         current_sensor2 = row[8]
     conn.close()
     
-    if current_sensor2 == None:
-        current_sensor2 = -1
-
 
     # send current temp and databse row to check for rapid rise
     temp_difference, temp_week_ago = check_rapid_rise(current_temp, 2)

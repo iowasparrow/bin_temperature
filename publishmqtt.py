@@ -94,28 +94,32 @@ def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
     client.on_connect = on_connect
     client.on_publish = on_publish
     try:
-        #client.connect("192.168.1.153",1883,60)
-        client.connect("192.168.9.100",1883,60)
+        client.connect("192.168.1.153",1883,60)
+        #client.connect("192.168.9.100",1883,60)
     except:
         print("connection failed can not reach the broker")
         exit(1)
     client.loop_start()
-    (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
-    (rc, mid) = client.publish("home/hottub", sensor1, retain=True);
-    (rc, mid) = client.publish("home/cathouse", sensor2, retain=True);
-    (rc, mid) = client.publish("home/airtemp", airtemp, qos=1,retain=True);
-    (rc, mid) = client.publish("home/soiltemp", soiltemp, qos=1,retain=True);
+#    (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
+    (rc, mid) = client.publish("home/sparesensor", sensor1, retain=True);
+    (rc, mid) = client.publish("home/pi3CPU", sensor2, retain=True);
+#    (rc, mid) = client.publish("home/airtemp", airtemp, qos=1,retain=True);
+#    (rc, mid) = client.publish("home/soiltemp", soiltemp, qos=1,retain=True);
     client.loop_stop()
     client.disconnect()
 
 
-sensor1 = read_sensor1()
+try:
+    sensor1 = read_sensor1()
+except:
+    sensor1 = None
 
-#try:
-sensor2 = read_sensor2()
-#except:
-#    print("no sensor 2 setting to none")
-#    sensor2 = None
+try:
+    sensor2 = read_sensor2()
+except:
+    print("no sensor 2 setting to none")
+    sensor2 = None
+
 
 picpu = read_CPU()
 airtemp = get_airtemp()
@@ -123,7 +127,7 @@ soiltemp = get_soiltemp()
 
 
 print("logging to database first, in case the broker is down.")
-log_to_database(siteid,sensor2,sensor1,airtemp,soiltemp,picpu)
+#log_to_database(siteid,sensor2,sensor1,airtemp,soiltemp,picpu)
 print("done logging to database")
 
 try:
