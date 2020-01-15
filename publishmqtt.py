@@ -103,7 +103,7 @@ def sendtobroker(picpu,sensor1,sensor2,airtemp,soiltemp):
     client.loop_start()
 #    (rc, mid) = client.publish("home/cputemp", picpu, qos=1,retain=True);
     (rc, mid) = client.publish("home/bintemp/sparesensor", sensor1, retain=True);
-    (rc, mid) = client.publish("home/bintemp/sensor2", sensor2, retain=True);
+#    (rc, mid) = client.publish("home/bintemp/sensor2", sensor2, retain=True);
 #    (rc, mid) = client.publish("home/airtemp", airtemp, qos=1,retain=True);
 #    (rc, mid) = client.publish("home/soiltemp", soiltemp, qos=1,retain=True);
     client.loop_stop()
