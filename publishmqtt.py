@@ -89,20 +89,21 @@ def on_connect(client, userdata, flags, rc):
 #client.connect("192.168.1.153",1883,60)
 #client.loop_start()
 
-def sendtobroker(tempF,sensor1,sensor2,airtemp,soiltemp):
+def sendtobroker(picpu,sensor1,sensor2,airtemp,soiltemp):
     client = mqtt.Client("raspberryPI")
     client.on_connect = on_connect
     client.on_publish = on_publish
     try:
+        print("trying the broker")
         client.connect("192.168.1.153",1883,60)
         #client.connect("192.168.9.100",1883,60)
     except:
         print("connection failed can not reach the broker")
         exit(1)
     client.loop_start()
-#    (rc, mid) = client.publish("home/cputemp", tempF, qos=1,retain=True);
-    (rc, mid) = client.publish("home/sparesensor", sensor1, retain=True);
-    (rc, mid) = client.publish("home/pi3CPU", sensor2, retain=True);
+#    (rc, mid) = client.publish("home/cputemp", picpu, qos=1,retain=True);
+    (rc, mid) = client.publish("home/bintemp/sparesensor", sensor1, retain=True);
+    (rc, mid) = client.publish("home/bintemp/sensor2", sensor2, retain=True);
 #    (rc, mid) = client.publish("home/airtemp", airtemp, qos=1,retain=True);
 #    (rc, mid) = client.publish("home/soiltemp", soiltemp, qos=1,retain=True);
     client.loop_stop()
